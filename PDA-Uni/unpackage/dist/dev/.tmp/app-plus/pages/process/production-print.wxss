@@ -1,0 +1,10 @@
+
+.flex-item {
+	width: 35%;
+	float: left;
+	text-align: center;
+}
+.center-box {
+	max-height: 800rpx;
+}
+

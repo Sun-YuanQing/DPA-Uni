@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--要求
+	这里用折叠选项卡的形式展现，箱号&序列号
+-->
+
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">销售成品明细</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">料品编号：<span class="valueStyle">{{proInfo.itemNo}}</span> </label>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">料品名称：<span class="valueStyle">{{proInfo.partName}}</span></label>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: calc(100% / 2);">应发总数量：<span class="valueStyle">{{proInfo.sheetQty}}</span></label>
+					<label class="mui-h5" style="width: calc(100% / 2);">实发总数量：<span class="valueStyle">{{proInfo.validQty}}</span></label>
+				</div>
+			</div>
+
+			<ul class="mui-table-view">
+				<template v-for="(item,index) in itemList">
+					<li class="mui-table-view-cell mui-collapse ">
+						<a class="mui-navigate-right" href="#">箱号：{{ item.boxNo }} ({{item.esnNo.length}})</a>
+
+						<ul class="mui-table-view mui-table-view-chevron">
+							<li v-for="(ensNo, subIndex) in item.esnNo" class="mui-table-view-cell zebra">
+								{{ensNo}}
+							</li>
+						</ul>
+					</li>
+				</template>
+
+			</ul>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			(function($, doc) {
+				$.init({});
+
+				var vm = new Vue({
+					el: '.mui-content',
+					data: {
+						itemList: [],
+						proInfo: {}
+					}
+				});
+
+				$.plusReady(function() {
+					var self = plus.webview.currentWebview();
+					vm.proInfo = self.proInfo;
+					vm.itemList = self.proInfo.esnList;
+
+					//阻尼系数
+					var deceleration = $.os.ios ? 0.003 : 0.0004;
+					$('.mui-scroll-wrapper').scroll({
+						bounce: true,
+						indicators: true, //是否显示滚动条
+						deceleration: deceleration
+					});
+
+				});
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,12 @@
+
+.input-row {
+	padding: 11rpx 0rpx;
+}
+.btn-row {
+	margin-top: 30rpx;
+	padding: 20rpx;
+}
+button.primary {
+	background-color: #0faeff;
+}
+

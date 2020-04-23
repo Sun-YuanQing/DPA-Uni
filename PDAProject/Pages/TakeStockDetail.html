@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<!--要求
+		没有盘点单列表，直接扫描盘点单，返回盘点单信息(总记录数、已盘数、未盘数...)
+	点击 “已盘数” 查询结果
+	每次盘点，只显示 当前扫描的数据，然后更新 单据信息(已盘数...)
+	
+	实时提交单笔盘点结果
+	
+	在PC端生成 盘点结果，这里也没有结束状态
+-->
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+			.totalNum {
+				display: block;
+				font-size: 30px;
+				text-decoration: underline;
+			}
+			/*数字框的宽度*/
+			
+			.mui-numbox {
+				width: calc(100%);
+				height: 25px;
+				padding-left: 0;
+				padding-right: 0;
+			}
+			
+			#contentInfo .mui-table .mui-row {
+				height: 25px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">盘点明细</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<input id="txtBarcode" type="text" class="mui-input-clear mui-input" v-model="patchNo" placeholder="请扫描料号或批号" value="">
+						</div>
+						<div id="imgScan" class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">单号：<span class="valueStyle">{{orderInfo.sheetNo}}</span></label>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">仓库：<span class="valueStyle">{{orderInfo.whName}}</span></label>
+				</div>
+				<div class="mui-input-row" style="height: 60px;">
+					<div class="mui-table" style="text-align: center;">
+						<div class="mui-row">
+							<div class="mui-table-cell mui-col-xs-4">
+								<span class="mui-h5">总记录行数</span>
+							</div>
+							<div class="mui-table-cell mui-col-xs-4">
+								<span class="mui-h5">已盘行数</span>
+							</div>
+							<div class="mui-table-cell mui-col-xs-4">
+								<span class="mui-h5">未盘行数</span>
+							</div>
+						</div>
+						<div class="mui-row">
+							<div class="mui-table-cell mui-col-xs-4">
+								<a tag='2' class="mui-btn-link totalNum" href="#">{{orderInfo.total}}</a>
+							</div>
+							<div class="mui-table-cell mui-col-xs-4">
+								<a tag='1' class="mui-btn-link totalNum" href="#">{{orderInfo.finished}}</a>
+							</div>
+							<div class="mui-table-cell mui-col-xs-4">
+								<a tag='0' class="mui-btn-link totalNum" href="#">{{orderInfo.unFinished}}</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="contentInfo" v-bind:style="{'display': proInfoDisplay}" class="mui-table-view mui-table-view-striped mui-table-view-condensed" style="margin-top: 3px; padding: 11px 15px;">
+				<div class="mui-table">
+					<div class="mui-row" v-for="field in Fileds">
+						<div class="mui-table-cell mui-col-xs-3">
+							<span class="mui-h5">{{field[0]}}：</span>
+						</div>
+						<div class="mui-table-cell mui-col-xs-9">
+							<span class="mui-h5 mui-ellipsis-2 valueStyle">{{ getFieldValue(field[1]) }}</span>
+						</div>
+					</div>
+					<div class="mui-row" style="height: 30px;">
+						<div class="mui-table-cell mui-col-xs-3">
+							<span class="mui-h5">实盘数：</span>
+						</div>
+						<div class="mui-table-cell mui-col-xs-9">
+							<div class="mui-numbox" data-numbox-min='0' data-numbox-max='1000'>
+								<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
+								<input id="txtValidQty" class="mui-input-numbox" type="number" />
+								<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
+							</div>
+						</div>
+					</div>
+					<div class="mui-row" style="height: 30px;">
+						<div class="mui-table-cell mui-col-xs-3">
+							<span class="mui-h5">已盘完：</span>
+						</div>
+						<div class="mui-table-cell mui-col-xs-9">
+							<input v-model="proInfo.pdSta" type="checkbox" style="height: 20px; width: 20px; vertical-align: middle;" />
+						</div>
+					</div>
+
+					<input id="btnOrderSave" type="button" id="" value="保存" style="width: calc(100%); margin-top: 10px; " />
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/VueEx.js"></script>
+		<script type="text/javascript" src="../js/lodash.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/ArrayEx.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+
+			var vm = new Vue({
+				el: '.mui-content',
+				data: {
+					proInfoDisplay: 'none', //料号信息是否显示
+					patchNo: '',
+					orderInfo: {
+						sheetNo: "",
+						sheetDate: "",
+						whNo: "",
+						whName: "",
+						total: 0,
+						finished: 0,
+						unFinished: 0
+					},
+					proInfo: {
+						sheetLot: "",
+						inoutLot: "",
+						partControl: 2,
+						partNo: "",
+						itemNo: "",
+						partName: "",
+						partSpec: "",
+						partUnit: "",
+						whNo: "",
+						whName: "",
+						sheetQty: 0,
+						validQty: 0,
+						pdSta: false,
+						oldPdSta: false //初始的状态
+					},
+					Fileds: [
+						['料号', 'itemNo'],
+						['名称', 'partName'],
+						['规格', 'partSpec'],
+						['单位', 'partUnit'],
+						['仓库', 'whName'],
+						['账面数', 'sheetQty']
+					]
+				},
+				watch: {
+					patchNo: function() {
+						if(this.patchNo == '')
+							return;
+						this.getProDetail();
+					}
+				},
+				methods: {
+					getProDetail: _.debounce(function() {
+						var wgtWaiting = plus.nativeUI.showWaiting("");
+						apiServer.getTakeStockOrderDetail(vm.orderInfo.sheetNo, vm.patchNo, 2, function(rlt) {
+							wgtWaiting.close();
+							if(rlt.success) {
+								vm.proInfoDisplay = 'block';
+								var jsonData = JSON.parse(rlt.ResultNote);
+								vm.proInfo = jsonData[0];
+								vm.proInfo.pdSta = vm.proInfo.pdSta == "0" ? false : true;
+								vm.proInfo.oldPdSta = vm.proInfo.pdSta;
+								document.getElementById("txtValidQty").value = vm.proInfo.validQty;
+								setTxtFocus('txtValidQty');
+							} else {
+								setTxtFocus();
+								mui.toast(rlt.ResultText);
+							}
+							vm.patchNo = '';
+						});
+					}, 200),
+					getFieldValue: function(fieldName) {
+						return this.proInfo[fieldName];
+					},
+					resetData: function() { //重置数据
+						vm.orderNo = '';
+						vm.patchNo = '';
+						vm.orderInfo = {};
+						vm.proInfo = {};
+						vm.proInfoDisplay = 'none';
+					}
+				}
+			});
+
+			//添加页面传值自定义事件监听
+			window.addEventListener('PageParms', function(event) {
+				vm.orderInfo = event.detail.orderInfo;
+				vm.proInfo = {};
+				setTxtFocus();
+			});
+
+			mui.plusReady(function() {
+				EnableScan();
+				mui(".mui-icon-clear")[0].addEventListener('tap', function() {
+					vm.patchNo = "";
+				});
+
+				mui("#imgScan")[0].addEventListener('tap', function() {
+					mui.openWindow({
+						id: 'Barcode_scan.html',
+						url: 'Barcode_scan.html',
+						extras: {
+							cltName: 'imgScan',
+						}
+					});
+				});
+
+				mui('.mui-row').on('tap', '.mui-btn-link', function() {
+					var tag = this.getAttribute("tag");
+					//打开详细页面
+					mui.openWindow({
+						url: 'TakeStockDetail_ProList.html',
+						id: 'TakeStockDetail_ProList.html',
+						extras: {
+							tag: tag,
+							orderInfo: vm.orderInfo
+						} //自定义扩展参数
+					});
+					setTxtFocus();
+				});
+
+				var btnOrderSave = document.getElementById("btnOrderSave");
+				//单据保存
+				btnOrderSave.addEventListener('tap', function(event) {
+					//更新 已盘行数 & 未盘行数
+					if(vm.proInfo.oldPdSta != vm.proInfo.pdSta) {
+						if(vm.proInfo.pdSta) {
+							//更新已盘行数 +1 未盘行数 -1
+							vm.orderInfo.finished += 1;
+							vm.orderInfo.unFinished -= 1;
+						} else {
+							//更新已盘行数-1 未盘行数 +1
+							vm.orderInfo.finished -= 1;
+							vm.orderInfo.unFinished += 1;
+						}
+					}
+
+					var data = {
+						sheetLot: vm.proInfo.sheetLot,
+						validQty: document.getElementById("txtValidQty").value,
+						pdSta: vm.proInfo.pdSta
+					};
+					data.pdSta = vm.proInfo.pdSta == true ? 1 : 0;
+					var wgtWaiting = plus.nativeUI.showWaiting("");
+					apiServer.saveTakeStockOrder(data, function(rlt) {
+						wgtWaiting.close();
+						if(rlt.success) {
+							mui.toast('保存成功');
+							vm.proInfoDisplay = 'none';
+							setTxtFocus();
+						} else {
+							mui.toast(rlt.ResultText);
+						}
+					})
+				});
+
+				//-- 监控回退事件
+				mui.oldBack = mui.back;
+				mui.back = function(event) {
+					mui.oldBack();
+					setTimeout(function() {
+						vm.resetData();
+					}, 300);
+				};
+
+			});
+
+			/**
+			 * @description 扫描结果
+			 * @param {Object} t 类型
+			 * @param {Object} r 结果
+			 * @param {Object} f 文件路径
+			 * @param {String} cltName 控件名称
+			 */
+			function scaned(t, r, f, cltName) {
+				vm.patchNo = r;
+			}
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "拆箱登记",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

@@ -1,0 +1,7 @@
+
+.mouldTips{
+	color: #2C405A;
+	padding-left: 10px;
+	border-bottom: 1rpx dashed #ccc;
+}
+

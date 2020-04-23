@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"input-row { padding: ",[0,11]," ",[0,0],"; }\n.",[1],"btn-row { margin-top: ",[0,30],"; padding: ",[0,20],"; }\nwx-button.",[1],"primary { background-color: #0faeff; }\n",],undefined,{path:"./pages/process/process-report.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/process/process-report.wxml') } }));

@@ -1,0 +1,1 @@
+<view class="pagefoot" style="{{'position:'+(footerStyle)+';'}}"><slot></slot></view>

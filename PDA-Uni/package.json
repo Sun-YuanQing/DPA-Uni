@@ -1,0 +1,16 @@
+{
+  "name": "PDA-Uni",
+  "version": "1.0.0",
+  "description": "PDA   \r ---",
+  "main": "main.js",
+  "dependencies": {
+    "xmldom": "^0.1.27"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

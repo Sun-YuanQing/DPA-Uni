@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "设备检点",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

@@ -1,0 +1,11 @@
+
+.flex-item {
+	width: 33.3%;
+
+	text-align: center;
+	margin: auto;
+}
+.center-box {
+	max-height: 800rpx;
+}
+

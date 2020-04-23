@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "蓝牙打印设置",
+  "usingComponents": {
+    "uni-popup": "/components/uni-popup/uni-popup"
+  }
+}

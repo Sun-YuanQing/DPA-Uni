@@ -1,0 +1,42 @@
+
+#viewHeader {
+	width: 100%;
+	position: fixed;
+	top: 0px;
+	z-index: 5;
+	float: left;
+	background: #bdcede;
+}
+.uni-padding-wrap {
+	margin-top: 35px;
+}
+.input-view {
+	width: 92%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	background-color: #f0f0f0;
+	height: 30px;
+	border-radius: 15px;
+	padding: 0 4%;
+	-webkit-flex-wrap: 1;
+	    -ms-flex-wrap: 1;
+	        flex-wrap: 1;
+	margin: 7px 0;
+	line-height: 30px;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+}
+.input-view .uni-icon {
+	line-height: 30px !important;
+}
+.input-view .input {
+	height: 30px;
+	line-height: 30px;
+	width: 94%;
+	padding: 0 3%;
+}
+

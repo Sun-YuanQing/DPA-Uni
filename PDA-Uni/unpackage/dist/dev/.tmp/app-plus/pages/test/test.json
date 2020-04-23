@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "测试信息",
+  "usingComponents": {
+    "label-print": "/components/label-print/label-print",
+    "print-button": "/components/label-print/print-button"
+  }
+}

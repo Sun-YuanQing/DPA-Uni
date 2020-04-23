@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "工单下线",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input",
+    "mpvue-picker": "/components/mpvue-picker/mpvuePicker",
+    "uni-popup-modal": "/components/uni-popup-modal/uni-popup-modal"
+  }
+}

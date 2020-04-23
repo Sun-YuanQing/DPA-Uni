@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "领料出库",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input",
+    "authorize-input": "/components/authorize-input/authorize-input",
+    "lotunpack": "/components/lotunpack/lotunpack"
+  }
+}

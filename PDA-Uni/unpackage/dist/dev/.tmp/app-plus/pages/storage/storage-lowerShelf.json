@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "储位仓内下架",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "序列号装箱",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input",
+    "uni-popup": "/components/uni-popup/uni-popup",
+    "uni-popup-modal": "/components/uni-popup-modal/uni-popup-modal",
+    "print-button": "/components/label-print/print-button"
+  }
+}

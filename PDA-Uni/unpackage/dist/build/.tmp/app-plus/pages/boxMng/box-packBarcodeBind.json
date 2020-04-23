@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "外箱客户条码绑定",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

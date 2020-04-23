@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "登录",
+  "titleNView": {
+    "buttons": [
+      {
+        "text": "",
+        "fontSrc": "/static/uni.ttf",
+        "fontSize": "22px",
+        "color": "#999999"
+      }
+    ]
+  },
+  "usingComponents": {
+    "uni-upgrade": "/components/uni-upgrade/uni-upgrade"
+  }
+}

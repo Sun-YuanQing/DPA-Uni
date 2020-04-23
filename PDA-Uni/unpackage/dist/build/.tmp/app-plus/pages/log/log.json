@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "错误日志",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "uni-card": "/components/uni-card/uni-card"
+  }
+}

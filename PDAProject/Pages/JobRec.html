@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+			.mui-scroll-wrapper {
+				top: 378px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">岗位记录</h1>
+		</header>
+		
+		
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<input type="text" v-model="moLot" class="mui-input-clear mui-input" placeholder="请扫描制造批号" value="">
+						</div>
+						<div class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+				</div>
+				<div class="mui-input-row">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<!--箱号如果重复扫描，提示是否删除-->
+							<input type="text" v-model="processNo" class="mui-input-clear mui-input" placeholder="请扫描工序" value="">
+						</div>
+						<div class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+				</div>
+				<div class="mui-input-row">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<!--箱号如果重复扫描，提示是否删除-->
+							<input type="text" v-model="job" class="mui-input-clear mui-input" placeholder="请扫描加工中心" value="">
+						</div>
+						<div class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+				</div>
+				
+				<div class="mui-input-row">
+					<label class="mui-h5">合格数量：0</label>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5">不合格数量：</label>
+					<div class="mui-numbox" data-numbox-min='0' data-numbox-max='1000' style="width: 150px;">
+						<!-- "-"按钮，点击可减小当前数值 -->
+						<button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+						<input class="mui-numbox-input" type="number" />
+						<!-- "+"按钮，点击可增大当前数值 -->
+						<button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
+					</div>
+				</div>
+				
+				<div class="mui-input-row" style="margin-top: 5px;">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<!--箱号如果重复扫描，提示是否删除-->
+							<input type="text" class="mui-input-clear mui-input" placeholder="请扫描箱号" value="">
+						</div>
+						<div class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+				</div>
+				
+				<div class="mui-input-row">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<!--箱号如果重复扫描，提示是否删除-->
+							<input type="text" class="mui-input-clear mui-input" placeholder="请扫描料号" value="">
+						</div>
+						<div class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+				</div>
+				
+				
+				<div class="mui-content-padded">
+					<button class="mui-btn" style="width:100%; margin-bottom: 10px;">添加</button>
+				</div>
+			</div>
+
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+						<li class="mui-table-view-cell" v-for="item in itemList">
+							<div class="mui-table">
+								<div class="mui-row" v-for="field in Fileds">
+									<div class="mui-table-cell mui-col-xs-3">
+										<span class="mui-h5">{{field[0]}}：</span>
+									</div>
+									<div class="mui-table-cell mui-col-xs-9">
+										<span class="mui-h5 mui-ellipsis-2 valueStyle">{{ getFieldValue(item, field[1]) }}</span>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/ArrayEx.js"></script>
+		<script type="text/javascript" src="../js/lodash.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			/**
+			 * @description 是否发生更改
+			 * @type {Boolean}
+			 */
+			var isChanged = false;
+
+			var vm = new Vue({
+				el: '.mui-content',
+				data: {
+					moLot: "",
+					processNo: "",
+					job: "",
+					Fileds: [
+						['批号', 'patchNo'],
+						['料号', 'itemNo'],
+						['数量', 'Qty']
+					],
+					itemList: [{}, {}, {}, {}, {}, {}, {}, {}]
+				},
+				watch: {},
+				methods: {
+					getFieldValue: function(item, fieldName) {
+						return item[fieldName];
+					}
+				}
+			});
+
+			mui.plusReady(function() {
+				//阻尼系数
+				var deceleration = mui.os.ios ? 0.003 : 0.0004;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: true,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+
+			});
+		</script>
+	</body>
+
+</html>

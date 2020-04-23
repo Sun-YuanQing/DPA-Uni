@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "华为标签检验",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

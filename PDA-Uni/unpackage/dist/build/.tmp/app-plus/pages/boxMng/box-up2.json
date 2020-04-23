@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "装箱(不打标签)",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

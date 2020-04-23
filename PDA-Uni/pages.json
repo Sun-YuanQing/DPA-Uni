@@ -1,0 +1,553 @@
+{
+	"pages": [
+		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"type": "menu"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "\ue534",
+							"fontSrc": "/static/uni.ttf",
+							"fontSize": "22px",
+							"color": "#999999"
+						}]
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/appconfig/appconfig",
+			"style": {
+				"navigationBarTitleText": "服务器配置"
+			}
+		},
+		{
+			"path": "pages/appconfig/set-workcenter",
+			"style": {
+				"navigationBarTitleText": "工作中心配置"
+			}
+		},
+		{
+			"path": "pages/appconfig/set-bluetooth",
+			"style": {
+				"navigationBarTitleText": "蓝牙打印设置"
+			}
+		},
+		{
+			"path": "pages/appconfig/otherconfig",
+			"style": {
+				"navigationBarTitleText": "其它功能"
+			}
+		},
+		{
+			"path": "pages/process/emp-work",
+			"style": {
+				"navigationBarTitleText": "人员上岗"
+			}
+		},
+		{
+			"path": "pages/process/process-online",
+			"style": {
+				"navigationBarTitleText": "工单上线"
+			}
+		},
+		{
+			"path": "pages/process/process-offline",
+			"style": {
+				"navigationBarTitleText": "工单下线"
+			}
+		},
+		{
+			"path": "pages/process/process-examine",
+			"style": {
+				"navigationBarTitleText": "设备检点"
+			}
+		},
+		{
+			"path": "pages/process/process-tl",
+			"style": {
+				"navigationBarTitleText": "工序投料"
+			}
+		},
+		{
+			"path": "pages/process/process-tr",
+			"style": {
+				"navigationBarTitleText": "工序投入"
+			}
+		},
+		{
+			"path": "pages/process/process-receive",
+			"style": {
+				"navigationBarTitleText": "工序交接"
+			}
+		}, {
+			"path": "pages/process/process-report",
+			"style": {
+				"navigationBarTitleText": "工序报工"
+			}
+		},
+		{
+			"path": "pages/process/production-print",
+			"style": {
+				"navigationBarTitleText": "内包装打印"
+			}
+		}, //web-view-local
+		{
+			"path": "pages/process/process-getngqty",
+			"style": {
+				"navigationBarTitleText": "工序不良记录"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-up",
+			"style": {
+				"navigationBarTitleText": "装箱"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-up2",
+			"style": {
+				"navigationBarTitleText": "装箱(不打标签)"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-fulltest",
+			"style": {
+				"navigationBarTitleText": "拆箱全检"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-open",
+			"style": {
+				"navigationBarTitleText": "拆箱登记"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-fqcup",
+			"style": {
+				"navigationBarTitleText": "FQC检验装箱"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-oqcup",
+			"style": {
+				"navigationBarTitleText": "OQC检验装箱"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-oqcupDet",
+			"style": {
+				"navigationBarTitleText": "OQC检验装箱明细"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-lastTest",
+			"style": {
+				"navigationBarTitleText": "尾箱核查"
+			}
+		},
+		{
+			"path": "pages/process/production-into",
+			"style": {
+				"navigationBarTitleText": "生产入库"
+			}
+		},
+		{
+			"path": "pages/process/production-intoDet",
+			"style": {
+				"navigationBarTitleText": "生产入库单"
+			}
+		},
+		{
+			"path": "pages/process/production-FQCinto",
+			"style": {
+				"navigationBarTitleText": "FQC合格入库"
+			}
+		},
+		{
+			"path": "pages/process/production-FQCintoDet",
+			"style": {
+				"navigationBarTitleText": "FQC合格入库单明细"
+			}
+		},
+		{
+			"path": "pages/process/production-return",
+			"style": {
+				"navigationBarTitleText": "生产退库"
+			}
+		},
+		{
+			"path": "pages/sale/sale-out",
+			"style": {
+				"navigationBarTitleText": "销售出库"
+			}
+		}, {
+			"path": "pages/sale/sale-outDet",
+			"style": {
+				"navigationBarTitleText": "销售出货明细"
+			}
+		},
+		{
+			"path": "pages/sale/sale-return",
+			"style": {
+				"navigationBarTitleText": "销售退货"
+			}
+		}, {
+			"path": "pages/sale/sale-returnDet",
+			"style": {
+				"navigationBarTitleText": "销售退货明细"
+			}
+		},
+		{
+			"path": "pages/sale/sale-oqccheck",
+			"style": {
+				"navigationBarTitleText": "OQC检验"
+			}
+		}, {
+			"path": "pages/sale/sale-oqccheckDet",
+			"style": {
+				"navigationBarTitleText": "OQC检验明细"
+			}
+		}, {
+			"path": "pages/sale/sale-tagcheck",
+			"style": {
+				"navigationBarTitleText": "标签校验"
+			}
+		},
+		{
+			"path": "pages/sale/sale-tagcheckDet",
+			"style": {
+				"navigationBarTitleText": "标签校验明细"
+			}
+		},
+		{
+			"path": "pages/sale/sale-oqcOut",
+			"style": {
+				"navigationBarTitleText": "OQC合格出货"
+			}
+		},
+		{
+			"path": "pages/purchase-temporary/purchase-temporary",
+			"style": {
+				"navigationBarTitleText": "采购暂收"
+			}
+		},
+		{
+			"path": "pages/purchase-temporary/purchase-return",
+			"style": {
+				"navigationBarTitleText": "采购退货"
+			}
+		},
+		{
+			"path": "pages/purchase-temporary/purchase-upperShelf",
+			"style": {
+				"navigationBarTitleText": "采购入库上架"
+			}
+		},
+		{
+			"path": "pages/purchase-temporary/purchase-allot",
+			"style": {
+				"navigationBarTitleText": "调拨"
+			}
+		},
+		{
+			"path": "pages/process/production-first",
+			"style": {
+				"navigationBarTitleText": "首件确认列表"
+			}
+		},
+		{
+			"path": "pages/process/production-firstDet",
+			"style": {
+				"navigationBarTitleText": "首件确认"
+			}
+		},
+		{
+			"path": "pages/test/test",
+			"style": {
+				"navigationBarTitleText": "测试信息"
+			}
+		},
+		{
+			"path": "pages/storage/storage-initUpperShelf",
+			"style": {
+				"navigationBarTitleText": "储位初始化上架"
+			}
+		},
+		{
+			"path": "pages/storage/storage-transfer",
+			"style": {
+				"navigationBarTitleText": "储位转移"
+			}
+		},
+		{
+			"path": "pages/storage/storage-lowerShelf",
+			"style": {
+				"navigationBarTitleText": "储位仓内下架"
+			}
+		},
+		{
+			"path": "pages/storage/storage-upperShelf",
+			"style": {
+				"navigationBarTitleText": "储位仓内上架"
+			}
+		},
+		{
+			"path": "pages/storage/storage-inventory",
+			"style": {
+				"navigationBarTitleText": "盘点管理"
+			}
+		},
+		{
+			"path": "pages/storage/storage-merge",
+			"style": {
+				"navigationBarTitleText": "仓内拆箱合并"
+			}
+		},
+		{
+			"path": "pages/storage/storage-mergeDet",
+			"style": {
+				"navigationBarTitleText": "仓内拆箱合并"
+			}
+		},
+		{
+			"path": "pages/storage/storage-boxUpSN",
+			"style": {
+				"navigationBarTitleText": "仓内序列号装箱"
+			}
+		},
+		{
+			"path": "pages/storage/storage-mergeSN",
+			"style": {
+				"navigationBarTitleText": "仓内序列号拆箱合并"
+			}
+		},
+		{
+			"path": "pages/storage/storage-mergeSNDet",
+			"style": {
+				"navigationBarTitleText": "仓内序列号拆箱合并"
+			}
+		},
+		{
+			"path": "pages/picking/pack-split",
+			"style": {
+				"navigationBarTitleText": "拆分处理"
+			}
+		},
+		{
+			"path": "pages/picking/picking-out",
+			"style": {
+				"navigationBarTitleText": "领料出库"
+			}
+		},
+		{
+			"path": "pages/picking/pickingOrder-out",
+			"style": {
+				"navigationBarTitleText": "物控领料"
+			}
+		},
+		{
+			"path": "pages/picking/pickingOrder-outDet",
+			"style": {
+				"navigationBarTitleText": "物控领料明细"
+			}
+		},
+		{
+			"path": "pages/picking/picking-return",
+			"style": {
+				"navigationBarTitleText": "生产退料"
+			}
+		},
+		{
+			"path": "pages/common/search-processList",
+			"style": {
+				"navigationBarTitleText": "工序查询",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/common/search-deviceList",
+			"style": {
+				"navigationBarTitleText": "设备查询",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/common/search-bug-processList",
+			"style": {
+				"navigationBarTitleText": "不良现象"
+			}
+		},
+		{
+			"path": "pages/purchase-temporary/purchase-allotDet",
+			"style": {
+				"navigationBarTitleText": "调拨单明细"
+			}
+		},
+		{
+			"path": "pages/log/log",
+			"style": {
+				"navigationBarTitleText": "错误日志"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-upSN",
+			"style": {
+				"navigationBarTitleText": "序列号装箱"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-upSN2",
+			"style": {
+				"navigationBarTitleText": "序列号装箱(不打标签)"
+			}
+		},
+		{
+			"path": "pages/boxMng/box-packBarcodeBind",
+			"style": {
+				"navigationBarTitleText": "外箱客户条码绑定"
+			}
+		},
+		{
+			"path": "pages/sale/sale-hwtag",
+			"style": {
+				"navigationBarTitleText": "华为标签检验"
+			}
+		},
+		{
+			"path": "pages/sale/sale-hwtagDet",
+			"style": {
+				"navigationBarTitleText": "华为标签检验明细"
+			}
+		},
+		{
+			"path": "pages/process/process-box",
+			"style": {
+				"navigationBarTitleText": "外箱打印"
+			}
+		},
+		{
+			"path": "pages/process/process-SN",
+			"style": {
+				"navigationBarTitleText": "序列号打印"
+			}
+		},
+		{
+			"path": "pages/process/production-printDet",
+			"style": {
+				"navigationBarTitleText": "内标签重打"
+			}
+		},
+		{
+			"path": "pages/process/production-returnDet",
+			"style": {
+				"navigationBarTitleText": "生产退库明细"
+			}
+		},
+		{
+			"path": "pages/purchase-temporary/pack-reprint",
+			"style": {
+				"navigationBarTitleText": "来料标签重打"
+			}
+		},
+		{
+			"path": "pages/otherIO/otherIO-into",
+			"style": {
+				"navigationBarTitleText": "其它入库"
+			}
+		},
+		{
+			"path": "pages/otherIO/otherIO-intoDet",
+			"style": {
+				"navigationBarTitleText": "其它入库明细"
+			}
+		},
+		{
+			"path": "pages/otherIO/otherIO-out",
+			"style": {
+				"navigationBarTitleText": "其它出库"
+			}
+		},
+		{
+			"path": "pages/otherIO/otherIO-outDet",
+			"style": {
+				"navigationBarTitleText": "其它出库明细"
+			}
+		},
+		{
+			"path": "pages/storage/storage-boxUp",
+			"style": {
+				"navigationBarTitleText": "仓内装箱"
+			}
+		},
+		{
+			"path": "pages/storage/storage-material",
+			"style": {
+				"navigationBarTitleText": "储位库存查询"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#0FAEFF",
+		"backgroundColor": "#F8F8F8"
+	},
+	"condition": {
+		//模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [{
+				"name": "测试校验公共方法", //模式名称
+				"path": "pages/test/motionSave", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
+			},
+			{
+				"name": "首页", //模式名称
+				"path": "pages/index/index" //启动页面，必选
+			},
+			{
+				"name": "登录", //模式名称
+				"path": "pages/login/login" //启动页面，必选
+			},
+			{
+				"name": "测试", //模式名称
+				"path": "pages/test/test", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
+			},
+			{
+				"name": "now",
+				"path": "pages/process/devanning-get"
+			}
+		]
+	}
+	/* ,"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#007AFF",
+		"borderStyle": "black",
+		"backgroundColor": "#F8F8F8",
+		"list": [{
+				"pagePath": "pages/test/test1",  
+				"text": "test"
+			},
+			{
+				"pagePath": "pages/test/test",  
+				"text": "test1"
+			}
+		]
+	} */
+}

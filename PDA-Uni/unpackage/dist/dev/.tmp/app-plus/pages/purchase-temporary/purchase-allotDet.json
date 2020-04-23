@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "调拨单明细",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

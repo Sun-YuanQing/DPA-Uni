@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "采购退货",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input",
+    "lotunpack": "/components/lotunpack/lotunpack"
+  }
+}

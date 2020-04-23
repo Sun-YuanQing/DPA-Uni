@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>html5+ android蓝牙操作</title>
+</head>
+<body>
+<div id="app">
+    <br/>
+    <input type="button" id="turnOnBluetooth" value="打开蓝牙" onclick="turnOnBluetooth()"/>
+    <input type="button" id="turnOffBluetooth" value="关闭蓝牙" onclick="turnOffBluetooth()"/>
+    <input type="button" id="initBluetooth" value="初始化蓝牙" onclick="initBluetooth()"/>
+    <br/>
+    <br/>
+
+    <input type="button" id="getPairedDevices" value="已配对的设备" onclick="getPairedDevices()"/>
+    <input type="button" id="discoveryNewDevice" value="搜索蓝牙设备" onclick="discoveryNewDevice()"/>
+    <br/>
+
+    <div> 
+        蓝牙状态
+        <br/>
+        &#12288;&#12288;启动状态：<span id="bluetoothEnable"></span>
+        <br/>
+        &#12288;&#12288;蓝牙状态：<span id="bluetoothState"></span>
+        <br/>
+        &#12288;&#12288;搜索状态：<span id="discoveryDeviceState"></span>
+        <br/>
+        &#12288;&#12288;监听状态：<span id="readThreadState"></span>
+    </div>
+    <br/>
+    <div>
+        消息：<span id="msg"></span>
+    </div>
+    <br/>
+
+    <div>
+        <input type="button" id="getConnectedBluetoothDevices" value="已连接的设备" onclick="getConnectedBluetoothDevices()"/>
+        <input type="button" id="disConnDevice" value="断开连接" onclick="disConnDevice()"/>
+        <input type="button" id="clearList" value="清空列表" onclick="clearList()"/>
+    </div>
+
+ 
+    搜索蓝牙设备：<br>
+   
+    <ul id="newDevices"></ul>
+
+    <div>
+        发送数据：
+        <textarea cols="20" rows="4" id="sendData"><DATA></textarea>
+		<input type="button" id="onSendData" value="发送" onclick="print()"/>
+		<br/>
+		
+    </div>
+    <br>
+
+
+</div>
+
+<script type="text/javascript" src="js/assets/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="js/POSTEKBluetoothTool.js"></script>
+<script type="text/javascript">
+    // 监听plusready事件
+    document.addEventListener("plusready", function () {
+        //// 扩展API加载完毕，现在可以正常调用扩展API
+        onPlusReady();
+    }, false);
+	function print(){
+			PTK_ClearBuffer();  // *清楚缓存 
+			PTK_SetLabelHeight(600,24,0,false);//*设置标签的高度 如果不设置可能会导致打印位置不准和跳纸
+			PTK_SetLabelWidth(800);//*设置标签的宽度 如果不设置会导致打印内容偏移 不准
+			PTK_SetDarkness(15);//*设置打印黑度  如果不设置 默认是10  对于特殊标签可能打印不清晰 
+			PTK_SetPrintSpeed(4);//设置打印速度
+			PTK_DrawRectangle(104,48,2,743,368);//打印一个矩形框
+			PTK_DrawLineOr(104,128,639,2);//打印线条
+			PTK_DrawLineOr(503,129,2,240);//打印线条
+			PTK_DrawLineOr(104,168,400,2);//打印线条
+			PTK_DrawLineOr(104,208,400,2);//打印线条
+			PTK_DrawLineOr(104,248,400,2);//打印线条
+			PTK_DrawLineOr(104,288,400,2);//打印线条
+			PTK_DrawLineOr(104,328,400,2);//打印线条
+			PTK_DrawLineOr(264,128,2,240);//打印线条
+			PTK_DrawBar2D_QR(531,155,0,0,0,9,4,1,8,"12345678");//打印QR码
+			PTK_DrawText(160,67,0,'6',2,2,'N',"博思得科技固定资产标签");//打印文字
+			PTK_DrawText(134,139,0,'6',1,1,'N',"资产类别");//打印文字
+			PTK_DrawText(134,181,0,'6',1,1,'N',"名称型号");//打印文字
+			PTK_DrawText(134,217,0,'6',1,1,'N',"资产编号");//打印文字
+			PTK_DrawText(134,258,0,'6',1,1,'N',"启用时间");//打印文字
+			PTK_DrawText(134,298,0,'6',1,1,'N',"资产原值");//打印文字
+			PTK_DrawText(134,339,0,'6',1,1,'N',"保管单位");//打印文字
+			PTK_DrawText(344,137,0,'6',1,1,'N',"服务器");//打印文字
+			PTK_DrawText(283,177,0,'6',1,1,'N',"戴尔（DELL）R730");//打印文字
+			PTK_DrawText(313,216,0,'6',1,1,'N',"49262183394");//打印文字
+			PTK_DrawText(320,257,0,'6',1,1,'N',"2018-06-18");//打印文字
+			PTK_DrawText(350,294,0,'6',1,1,'N',"37500");//打印文字
+			PTK_DrawText(344,340,0,'6',1,1,'N',"运维部");//打印文字
+			
+			PTK_PrintLabel(1,1);  //*执行打印  如果不启用 打印机不会打印
+	}
+</script>
+
+</body>
+
+</html>

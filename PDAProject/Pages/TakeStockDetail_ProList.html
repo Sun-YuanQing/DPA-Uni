@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+			
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 10;
+			}
+			
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+			
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+			
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+			
+			.mui-pull-top-tips .mui-pull-loading {
+				-webkit-backface-visibility: hidden;
+				-webkit-transition-duration: 400ms;
+				transition-duration: 400ms;
+				margin: 0;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon.mui-reverse {
+				/*-webkit-transform: rotate(180deg) translateZ(0);*/
+			}
+			
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+			
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: #fafafa;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+			
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+			
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+			
+			.mui-scroll-wrapper {
+				top: 85px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">盘点信息</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">单号：{{orderInfo.sheetNo}}</label>
+				</div>
+			</div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+						<li v-for="item in itemList" class="mui-table-view-cell zebra">
+							<div class="mui-table">
+								<div class="mui-row" v-for="field in Fileds">
+									<div class="mui-table-cell mui-col-xs-4">
+										<span class="mui-h5">{{field[0]}}：</span>
+									</div>
+									<div class="mui-table-cell mui-col-xs-8">
+										<span class="mui-h5 mui-ellipsis-2 valueStyle">{{ getFieldValue(item, field[1]) }}</span>
+									</div>
+								</div>
+								<div class="mui-row">
+									<div class="mui-table-cell mui-col-xs-4">
+										<span class="mui-h5">已盘完：</span>
+									</div>
+									<div class="mui-table-cell mui-col-xs-8">
+										<input v-if="item.pdSta == '1'" type="checkbox" checked="checked" style="height: 20px; width: 20px; vertical-align: middle;" disabled="disabled" />
+										<input v-if="item.pdSta == '0'" type="checkbox" style="height: 20px; width: 20px; vertical-align: middle;" disabled="disabled" />
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/mui.pullToRefresh.js"></script>
+		<script type="text/javascript" src="../js/mui.pullToRefresh.material.js"></script>
+		<script type="text/javascript" src="../js/lodash.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			/**
+			 * @description 分页数
+			 * @param {Number} offset 分页数
+			 */
+			var offset = 0;
+
+			mui.init({});
+
+			mui.ready(function() {
+				mui('.mui-scroll').pullToRefresh({
+					down: {
+						callback: function() {
+							offset = 0;
+							var self = this;
+							setTimeout(function() {
+								queryOrderDetail();
+								self.endPullDownToRefresh();
+							}, 200);
+						}
+					},
+					up: {
+						callback: function() {
+							offset += 1;
+							var self = this;
+							setTimeout(function() {
+								queryOrderDetail(true);
+								self.endPullUpToRefresh();
+							}, 200);
+						}
+					}
+				});
+			});
+
+			var vm = new Vue({
+				el: '.mui-content',
+				data: {
+					itemList: [],
+					tag: 0,
+					orderInfo: {},
+					Fileds: [
+						['料号', 'itemNo'],
+						['名称', 'partName'],
+						['规格', 'partSpec'],
+						['单位', 'partUnit'],
+						['仓库', 'whName'],
+						['账面数', 'sheetQty'],
+						['实盘数', 'validQty']
+					]
+				},
+				methods: {
+					getFieldValue: function(item, fieldName) {
+						return item[fieldName];
+					},
+					resetData: function() { //重置数据
+						vm.orderInfo = {};
+						vm.itemList = [];
+					}
+				}
+			});
+
+			mui.plusReady(function() {
+				//阻尼系数
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: true,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+
+				var self = plus.webview.currentWebview();
+				vm.tag = self.tag;
+				vm.orderInfo = self.orderInfo;
+				var title = '';
+				//0: 未完成 ,1: 已完成 ,2: 全部,不传表示全部
+				if(self.tag == 2) {
+					title = '所有盘点明细';
+				} else if(self.tag == 1) {
+					title = '已盘点明细';
+				} else if(self.tag == 0) {
+					title = '未盘点明细';
+				}
+				mui('.mui-title')[0].innerText = title;
+
+				queryOrderDetail();
+			});
+
+			/**
+			 * @description 查询单据明细
+			 * @param {Object} isPullUp 向上拉，加载更多
+			 */
+			function queryOrderDetail(isPullUp, orderNo) {
+				var tmpVM = vm;
+				plus.nativeUI.showWaiting("正在处理中...");
+				apiServer.getTakeStockOrderDetail(vm.orderInfo.sheetNo, '', vm.tag, function(rlt) {
+					plus.nativeUI.closeWaiting();
+					if(rlt.success) {
+						isPullUp = isPullUp || false; //默认刷新
+						var jsonData = JSON.parse(rlt.ResultNote);
+						if(isPullUp) { //加载更多
+							tmpVM.itemList = tmpVM.itemList.concat(jsonData);
+						} else {
+							tmpVM.itemList = jsonData;
+						}
+					} else {
+						mui.toast(rlt.ResultText);
+					}
+				}, offset, 10);
+			}
+		</script>
+	</body>
+
+</html>

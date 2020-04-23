@@ -1,0 +1,7 @@
+
+.barcode-input {
+	padding: 0 !important;
+	border-bottom: 1rpx solid #c8c7cc;
+	background-color: #eee !important;
+}
+

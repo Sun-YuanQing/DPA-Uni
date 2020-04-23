@@ -1,0 +1,1 @@
+<view><button data-event-opts="{{[['tap',[['onPartSync',['$event']]]]]}}" bindtap="__e">料号同步</button></view>

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "工序不良记录",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

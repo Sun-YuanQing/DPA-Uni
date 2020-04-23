@@ -1,0 +1,24 @@
+
+.btn {
+	margin-top: 50rpx;
+	height: 40px;
+	width: 600rpx;
+	line-height: 40px;
+}
+.item {
+	display: block;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	margin: 0 30px;
+	margin-top: 10px;
+	background-color: #FFA850;
+	border-radius: 5px;
+	border-bottom: 2px solid #68BAEA;
+}
+.block {
+	display: block;
+	color: #ffffff;
+	padding: 5px;
+}
+
+page::after{position:fixed;content:'';left:-1000px;top:-1000px;-webkit-animation:shadow-preload .1s;-webkit-animation-delay:3s;animation:shadow-preload .1s;animation-delay:3s}@-webkit-keyframes shadow-preload{0%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}100%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}}@keyframes shadow-preload{0%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}100%{background-image:url(https://cdn.dcloud.net.cn/img/shadow-grey.png)}}

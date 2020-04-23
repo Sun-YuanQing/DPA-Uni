@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="17.1.4.0" Ref="1" ControlType="Mes.UI.XtraReportEx, Mes.UI, Version=1.0.69.0, Culture=neutral, PublicKeyToken=null" Name="原材料条码" DisplayName="原材料条码" SnapGridSize="25" ReportUnit="TenthsOfAMillimeter" Margins="0, 0, 0, 0" PaperKind="Custom" PageWidth="500" PageHeight="300" Version="17.1" DataSource="#Ref-0" Dpi="254">
+  <CalculatedFields>
+    <Item1 Ref="2" Name="calculatedField1" DisplayName="QRCode" Expression="'(I)'+[TagId] + '||(S)'+[PoMoSoLot] + '||(P)'+[PartItemNo] + '||(Q)'+[SheetQty] + '||(L)'+[ProLot] + '||(C)'+[CitemNo] + '||(R)'+[InLot]+ '||(D)'+[ProDate]" />
+  </CalculatedFields>
+  <Bands>
+    <Item1 Ref="3" ControlType="DetailBand" Name="Detail" HeightF="300" TextAlignment="TopLeft" Dpi="254" Padding="0,0,0,0,254">
+      <MultiColumn Ref="4" ColumnWidth="500" ColumnSpacing="20" Mode="UseColumnCount" />
+      <Controls>
+        <Item1 Ref="5" ControlType="XRLabel" Name="xrLabel13" AutoWidth="true" CanGrow="false" Text="[库位]" TextAlignment="MiddleLeft" SizeF="60.27483,40" LocationFloat="159.1599, 234.3386" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="0,0,0,0,254">
+          <StylePriority Ref="6" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item1>
+        <Item2 Ref="7" ControlType="XRLabel" Name="xrLabel12" AutoWidth="true" CanGrow="false" Text="[Q]" TextAlignment="MiddleLeft" SizeF="35,39.99998" LocationFloat="159.1599, 190.603" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="0,0,0,0,254">
+          <StylePriority Ref="8" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item2>
+        <Item3 Ref="9" ControlType="XRLabel" Name="xrLabel11" AutoWidth="true" CanGrow="false" Text="[R]" TextAlignment="MiddleLeft" SizeF="35,39.99998" LocationFloat="159.1599, 146.8676" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="0,0,0,0,254">
+          <StylePriority Ref="10" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item3>
+        <Item4 Ref="11" ControlType="XRLabel" Name="xrLabel10" AutoWidth="true" CanGrow="false" Text="[S]" TextAlignment="MiddleLeft" SizeF="35,39.99998" LocationFloat="159.1599, 103.1322" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="0,0,0,0,254">
+          <StylePriority Ref="12" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item4>
+        <Item5 Ref="13" ControlType="XRLabel" Name="xrLabel9" AutoWidth="true" CanGrow="false" Text="[P]" TextAlignment="MiddleLeft" SizeF="35,39.99998" LocationFloat="159.1599, 59.39687" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="0,0,0,0,254">
+          <StylePriority Ref="14" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item5>
+        <Item6 Ref="15" ControlType="XRLabel" Name="xrLabel8" AutoWidth="true" CanGrow="false" Text="[C]" TextAlignment="MiddleLeft" SizeF="35,39.99998" LocationFloat="159.1599, 15.66145" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="0,0,0,0,254">
+          <StylePriority Ref="16" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item6>
+        <Item7 Ref="17" ControlType="XRBarCode" Name="xrBarCode2" Module="2.54" AutoModule="true" Alignment="BottomLeft" ShowText="false" SizeF="130,130" LocationFloat="17.15994, 144.3386" Dpi="254" BackColor="White" Padding="0,0,0,0,254" Borders="None">
+          <Symbology Ref="18" Name="QRCode" CompactionMode="Byte" />
+          <DataBindings>
+            <Item1 Ref="19" PropertyName="Text" DataMember="calculatedField1" />
+          </DataBindings>
+          <StylePriority Ref="20" UseBackColor="false" UsePadding="false" UseBorders="false" />
+        </Item7>
+        <Item8 Ref="21" ControlType="XRLabel" Name="xrLabel7" CanGrow="false" TextAlignment="MiddleLeft" WordWrap="false" SizeF="219.7978,40.00008" LocationFloat="219.4348, 234.3385" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="3,0,0,0,254">
+          <DataBindings>
+            <Item1 Ref="22" PropertyName="Text" DataMember="Reservelocus" />
+          </DataBindings>
+          <StylePriority Ref="23" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item8>
+        <Item9 Ref="24" ControlType="XRLabel" Name="xrLabel6" AutoWidth="true" CanGrow="false" TextAlignment="MiddleLeft" SizeF="290,40.00002" LocationFloat="194.16, 190.603" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="3,0,0,0,254">
+          <DataBindings>
+            <Item1 Ref="25" FormatString="{0:#,#0.#######}" PropertyName="Text" DataMember="SheetQty" />
+          </DataBindings>
+          <StylePriority Ref="26" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item9>
+        <Item10 Ref="27" ControlType="XRLabel" Name="xrLabel2" AutoWidth="true" CanGrow="false" TextAlignment="MiddleLeft" SizeF="290,39.99995" LocationFloat="194.16, 146.8676" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="3,0,0,0,254">
+          <DataBindings>
+            <Item1 Ref="28" PropertyName="Text" DataMember="InLot" />
+          </DataBindings>
+          <StylePriority Ref="29" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item10>
+        <Item11 Ref="30" ControlType="XRLabel" Name="xrLabel4" CanGrow="false" TextAlignment="MiddleLeft" SizeF="290,39.99995" LocationFloat="194.16, 103.1322" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="3,0,0,0,254">
+          <DataBindings>
+            <Item1 Ref="31" PropertyName="Text" DataMember="PoMoSoLot" />
+          </DataBindings>
+          <StylePriority Ref="32" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item11>
+        <Item12 Ref="33" ControlType="XRLabel" Name="xrLabel1" AutoWidth="true" CanGrow="false" TextAlignment="MiddleLeft" SizeF="290,39.99997" LocationFloat="194.16, 59.39687" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="3,0,0,0,254">
+          <DataBindings>
+            <Item1 Ref="34" PropertyName="Text" DataMember="PartItemNo" />
+          </DataBindings>
+          <StylePriority Ref="35" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item12>
+        <Item13 Ref="36" ControlType="XRLabel" Name="xrLabel3" AutoWidth="true" CanGrow="false" TextAlignment="MiddleLeft" SizeF="290,40.00002" LocationFloat="194.16, 15.66142" Dpi="254" Font="微软雅黑, 6pt, style=Bold" Padding="3,0,0,0,254">
+          <DataBindings>
+            <Item1 Ref="37" PropertyName="Text" DataMember="CitemNo" />
+          </DataBindings>
+          <StylePriority Ref="38" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item13>
+        <Item14 Ref="39" ControlType="XRLabel" Name="xrLabel5" CanGrow="false" Text="Y" AnchorVertical="Both" AnchorHorizontal="Right" TextAlignment="BottomRight" WordWrap="false" SizeF="31.45923,40.00005" LocationFloat="452.7007, 239.3385" Dpi="254" Font="Times New Roman, 9pt, style=Bold" Padding="0,0,0,0,254">
+          <StylePriority Ref="40" UseFont="false" UsePadding="false" UseTextAlignment="false" />
+        </Item14>
+      </Controls>
+    </Item1>
+    <Item2 Ref="41" ControlType="TopMarginBand" Name="TopMargin" HeightF="0" TextAlignment="TopLeft" Dpi="254" Padding="0,0,0,0,254" />
+    <Item3 Ref="42" ControlType="BottomMarginBand" Name="BottomMargin" HeightF="0" TextAlignment="TopLeft" Dpi="254" Padding="0,0,0,0,254" />
+  </Bands>
+  <ReportPrintOptions Ref="43" DetailCountOnEmptyDataSource="0" />
+  <ComponentStorage>
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v17.1" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2U+PE5hbWU+b2JqZWN0RGF0YVNvdXJjZTE8L05hbWU+PERhdGFTb3VyY2UgVHlwZT0iTWVzLk1vZGVsLkJhcmNvZGVDb250cmFzdCwgTWVzLk1vZGVsLCBWZXJzaW9uPTEuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbCIgLz48L09iamVjdERhdGFTb3VyY2U+" />
+  </ComponentStorage>
+</XtraReportsLayoutSerializer>

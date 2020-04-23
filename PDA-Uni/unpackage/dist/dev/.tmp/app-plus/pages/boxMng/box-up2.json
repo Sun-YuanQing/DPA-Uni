@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "装箱(不打标签)",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

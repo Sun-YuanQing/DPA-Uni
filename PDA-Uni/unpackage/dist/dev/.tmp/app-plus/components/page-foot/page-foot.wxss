@@ -1,0 +1,12 @@
+
+.pagefoot {
+	position: fixed;
+	border-top: 1px solid #ccc;
+	padding: 5px;
+	min-height: 90rpx;
+	width: 97%;
+	left: 0;
+	bottom: 0;
+	overflow: hidden;
+}
+

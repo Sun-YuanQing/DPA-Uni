@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "工单上线",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input",
+    "process-scan-order": "/components/process-scanOrder/process-scanOrder"
+  }
+}

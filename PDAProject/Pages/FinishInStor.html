@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<!--要求：
+	打开页面，输入框默认获取焦点
+	扫描制造批号成功后，焦点定位到 扫描箱号上
+	要监控制造单号的 clear 按钮，如果已经录入箱号，修改时给出提示
+	校验 箱子的料号 是否与 制造单号的相同
+	重复扫描，提示删除
+	
+	如果已经扫描了箱号，再修改制造批号，要给出提示，是否删除现有数据
+	
+	过账
+		给出提示，确定过账
+		验证 是否有数据提交
+	
+	
+-->
+
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+			.mui-scroll-wrapper {
+				top: 244px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<button id="btnOrderSubmit" class="mui-btn mui-btn-blue mui-btn-link mui-pull-right">过账</button>
+			<h1 class="mui-title">完工入库</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<input id="txtMoLot" type="text" class="mui-input-clear mui-input" v-model="moLot" placeholder="请扫描制造批号" value="">
+						</div>
+						<div id="imgScan_MoLot" class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+				</div>
+				<div class="mui-input-row">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<!--箱号如果重复扫描，提示是否删除-->
+							<input id="txtBoxNo" type="text" class="mui-input-clear mui-input" v-model="boxNo" placeholder="请扫描箱号" value="">
+						</div>
+						<div id="imgScan_BoxNo" class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">物料编码：<span class="valueStyle">{{itemNoInfo.itemNo}}</span> </label>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">物料名称：<span class="valueStyle"></span>{{itemNoInfo.partName}} </label>
+				</div>
+			</div>
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="mui-h4" style="width: calc(100% * 0.6);">箱号({{totalBoxQty}}箱)</label>
+					<label class="mui-h4" style="width: calc(100% * 0.4);">数量({{totalQty}})</label>
+				</div>
+			</div>
+
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+						<li class="mui-table-view-cell" v-for="item in itemList">
+							<div class="mui-table">
+								<div class="mui-row">
+									<div class="mui-table-cell mui-col-xs-8">
+										<span class="mui-h5 valueStyle" style="width: auto;">{{ item.boxNo}}</span>
+									</div>
+									<div class="mui-table-cell mui-col-xs-4">
+										<span class="mui-h5 mui-ellipsis-2 valueStyle" style="width: auto;">{{ item.qty}}</span>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/ArrayEx.js"></script>
+		<script type="text/javascript" src="../js/lodash.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+			/**
+			 * @description 是否发生更改
+			 * @type {Boolean}
+			 */
+			var isChanged = false;
+			var isListen_moLot = true;
+
+			var vm = new Vue({
+				el: '.mui-content',
+				data: {
+					moLot: '', //制造批号
+					boxNo: '',
+					itemNoInfo: {
+						partNo: "",
+						itemNo: "",
+						partName: "",
+						partSpec: ""
+					}, //扫描制造批号后的对象
+					itemList: [],
+					totalQty: 0,
+					totalBoxQty: 0
+				},
+				watch: {
+					moLot: function(newValue, oldValue) {
+						if(!isListen_moLot) return;
+						if(vm.itemList.length > 0) {
+							var btnArray = ['取消', '删除'];
+							mui.confirm('已经录入了箱子信息，要删除之前的操作吗？', '系统提示', btnArray, function(e) {
+								if(e.index == 1) {
+									vm.resetData();
+								} else {
+									isListen_moLot = false;
+									vm.moLot = oldValue;
+									setTimeout(function() {
+										isListen_moLot = true; //300毫秒后恢复监控
+									}, 200)
+								}
+							});
+						} else {
+							if(this.moLot == '')
+								return;
+							this.getItemNo();
+						}
+					},
+					boxNo: function(newValue) {
+						if(this.boxNo == '')
+							return;
+						this.getBoxNo();
+					}
+				},
+				methods: {
+					getItemNo: _.debounce(function() {
+						var wgtWaiting = plus.nativeUI.showWaiting("");
+						apiServer.getScanMOLOT(vm.moLot, function(rlt) {
+							wgtWaiting.close();
+							if(rlt.success) {
+								var jsonData = JSON.parse(rlt.ResultNote);
+								vm.itemNoInfo = jsonData;
+								setTxtFocus('txtBoxNo');
+							} else {
+								vm.moLot = '';
+								mui.toast(rlt.ResultText);
+							}
+						});
+					}, 200),
+					getBoxNo: _.debounce(function() {
+						//要判断重复扫描的问题
+						var arrLength = vm.itemList.length
+						for(var i = 0; i < arrLength; i++) {
+							if(vm.itemList[i].boxNo == vm.boxNo) {
+								var btnArray = ['是', '否'];
+								mui.confirm('该箱号已经扫描过，是否要删除？', '系统提示', btnArray, function(e) {
+									if(e.index == 0) {
+										vm.totalBoxQty -= 1;
+										vm.totalQty -= vm.itemList[i].qty;
+										vm.itemList.removeAt(i);
+									} else {
+
+									}
+									vm.boxNo = '';
+								});
+								return;
+							}
+						}
+
+						var wgtWaiting = plus.nativeUI.showWaiting("");
+						apiServer.getScanBox(vm.boxNo, false, function(rlt) {
+							wgtWaiting.close();
+							if(rlt.success) {
+								var jsonData = JSON.parse(rlt.ResultNote);
+								//比对料号是否相同
+								if(vm.itemNoInfo.partNo == jsonData.partNo) {
+									vm.itemList.push({
+										boxNo: vm.boxNo,
+										qty: jsonData.esnCount
+									});
+									vm.totalBoxQty += 1;
+									vm.totalQty += jsonData.esnCount;
+								} else {
+									mui.toast('该箱子不是这个制造单的！');
+								}
+								vm.boxNo = '';
+							} else {
+								mui.toast(rlt.ResultText);
+							}
+						});
+					}, 200),
+					resetData: function() { //重置数据
+						isChanged = false;
+						isListen_moLot = true;
+						mui('.mui-scroll-wrapper').scroll().scrollTo(0, 0);
+						vm.moLot = '';
+						vm.boxNo = '';
+						vm.itemNoInfo = {};
+						vm.itemList = [];
+						vm.totalQty = 0;
+						vm.totalBoxQty = 0;
+					}
+				}
+			});
+
+			mui.plusReady(function() {
+				EnableScan('imgScan_MoLot');
+				EnableScan('imgScan_BoxNo');
+				//阻尼系数
+				var deceleration = mui.os.ios ? 0.003 : 0.0004;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: true,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+				//制造批号的清除
+				mui(".mui-icon-clear")[0].addEventListener('tap', function() {
+					vm.moLot = "";
+				});
+
+				mui("#imgScan_MoLot")[0].addEventListener('tap', function() {
+					mui.openWindow({
+						id: 'Barcode_scan.html',
+						url: 'Barcode_scan.html',
+						extras: {
+							cltName: 'imgScan_MoLot',
+						}
+					});
+				});
+
+				mui("#imgScan_BoxNo")[0].addEventListener('tap', function() {
+					mui.openWindow({
+						id: 'Barcode_scan.html',
+						url: 'Barcode_scan.html',
+						extras: {
+							cltName: 'imgScan_BoxNo',
+						}
+					});
+				});
+
+				var btnOrderSubmit = document.getElementById("btnOrderSubmit");
+				//单据保存
+				btnOrderSubmit.addEventListener('tap', function(event) {
+					//验证 料号是否为空 
+					//  应放数量 == 实放数量
+					//  实放数量 》 0
+
+					if(vm.moLot == '') {
+						mui.toast('制造批号不能为空！');
+						setTxtFocus('txtMoLot');
+						return;
+					}
+					if(vm.itemList.length == 0) {
+						mui.toast('请扫描要入库的箱号！');
+						setTxtFocus('txtSNNo');
+						return;
+					}
+
+					var boxNoArr = [];
+					for(var i = 0; i < vm.itemList.length; i++) {
+						boxNoArr.push(vm.itemList[i].boxNo);
+					}
+					setTxtBlur('txtMoLot');
+					var data = {
+						moLot: vm.moLot,
+						boxNo: boxNoArr
+					};
+					var wgtWaiting = plus.nativeUI.showWaiting("");
+					apiServer.saveFinishInStor(data, function(rlt) {
+						wgtWaiting.close();
+						if(rlt.success) {
+							mui.toast('过账成功');
+							vm.resetData();
+							setTxtFocus('txtMoLot');
+						} else {
+							mui.toast(rlt.ResultText);
+						}
+					})
+
+				});
+
+				//-- 监控回退事件
+				mui.oldBack = mui.back;
+				mui.back = function(event) {
+					if(isChanged) {
+						var btnArray = ['确认', '取消'];
+						mui.confirm('数据还未保存，确认放弃更改？', '系统提示', btnArray, function(e) {
+							if(e.index == 0) {
+								mui.oldBack();
+								setTimeout(function() {
+									vm.resetData();
+								}, 300);
+							} else {}
+						});
+					} else {
+						mui.oldBack();
+						setTimeout(function() {
+							vm.resetData();
+						}, 300);
+					}
+				};
+
+			});
+
+			/**
+			 * @description 扫描结果
+			 * @param {Object} t 类型
+			 * @param {Object} r 结果
+			 * @param {Object} f 文件路径
+			 * @param {String} cltName 控件名称 
+			 */
+			function scaned(t, r, f, cltName) {
+				if(cltName == "imgScan_MoLot") {
+					vm.moLot = r;
+				} else if(cltName == "imgScan_BoxNo") {
+					vm.boxNo = r;
+				}
+			}
+
+			setTxtFocus('txtMoLot');
+		</script>
+	</body>
+
+</html>

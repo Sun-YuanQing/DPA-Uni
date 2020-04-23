@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"btn-row { margin-top: ",[0,30],"; padding: ",[0,20],"; }\n",],undefined,{path:"./pages/appconfig/appconfig.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/appconfig/appconfig.wxml') } }));

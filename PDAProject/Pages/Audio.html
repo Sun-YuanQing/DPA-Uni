@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">播放音乐</h1>
+		</header>
+
+		<div class="mui-content">
+			<input type="button" id="btnPlay" value="播放" />
+			<input type="button" id="btnBeep" value="蜂鸣" />
+			<input type="button" id="btnShake" value="摇一摇" />
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			(function($, doc) {
+				$.init({});
+
+				var vm = new Vue({
+					el: '.mui-content',
+					data: {
+
+					},
+					methods: {
+
+					}
+				});
+
+				$.plusReady(function() {
+					var btnPlay = document.getElementById("btnPlay");
+					btnPlay.addEventListener('tap', function () {
+						var url = '_www/audio/friendship.mp3';
+						playAudio(url);
+					});
+					
+					var btnBeep = document.getElementById("btnBeep");
+					btnBeep.addEventListener('tap', function () {
+						plus.device.beep();
+					});
+					
+					var btnShake = document.getElementById("btnShake");
+					btnShake.addEventListener('tap', function () {
+						var url = '_www/audio/shake.wav';
+						playAudio(url);
+					});
+				});
+
+				/**
+				 * @description 播放音频
+				 * @param {Object} url 文件路径
+				 */
+				function playAudio(url) {
+					var p = plus.audio.createPlayer(url);
+					p.play(function() {
+						//播放完成
+					}, function(e) {
+						//播放失败
+						//							outLine('播放音频文件"' + url + '"失败：' + e.message);
+					})
+				}
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

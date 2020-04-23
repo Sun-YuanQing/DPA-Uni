@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "装箱",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input",
+    "print-button": "/components/label-print/print-button"
+  }
+}

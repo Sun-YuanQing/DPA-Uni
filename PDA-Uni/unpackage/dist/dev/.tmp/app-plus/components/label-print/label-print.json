@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "uni-popup-modal": "/components/uni-popup-modal/uni-popup-modal",
+    "uni-popup": "/components/uni-popup/uni-popup",
+    "barcode-input": "/components/barcode-input/barcode-input"
+  },
+  "component": true
+}

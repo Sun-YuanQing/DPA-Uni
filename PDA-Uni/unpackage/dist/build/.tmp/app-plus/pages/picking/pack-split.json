@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "拆分处理",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input",
+    "lotunpack": "/components/lotunpack/lotunpack"
+  }
+}

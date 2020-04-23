@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "物控领料明细",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input",
+    "uni-card": "/components/uni-card/uni-card",
+    "lotunpack": "/components/lotunpack/lotunpack"
+  }
+}

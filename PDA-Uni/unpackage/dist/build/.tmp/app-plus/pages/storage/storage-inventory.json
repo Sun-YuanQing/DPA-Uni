@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "盘点管理",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

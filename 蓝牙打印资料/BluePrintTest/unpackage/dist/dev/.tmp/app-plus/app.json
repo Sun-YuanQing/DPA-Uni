@@ -1,0 +1,21 @@
+{
+  "pages": [
+    "pages/bleConnect/bleConnect",
+    "pages/sendCommand/sendCommand"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "nvueCompiler": "weex",
+  "splashscreen": {
+    "alwaysShowBeforeRender": true,
+    "autoclose": false
+  },
+  "appname": "BluePrintTest",
+  "compilerVersion": "2.1.0",
+  "usingComponents": {}
+}

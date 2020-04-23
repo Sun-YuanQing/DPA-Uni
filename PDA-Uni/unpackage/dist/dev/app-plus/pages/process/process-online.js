@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"mouldTips{ color: #2C405A; padding-left: 10px; border-bottom: ",[0,1]," dashed #ccc; }\n",],undefined,{path:"./pages/process/process-online.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/process/process-online.wxml') } }));

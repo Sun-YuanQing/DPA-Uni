@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "工序报工",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input",
+    "authorize-input": "/components/authorize-input/authorize-input",
+    "label-print": "/components/label-print/label-print",
+    "process-scan-order": "/components/process-scanOrder/process-scanOrder"
+  }
+}

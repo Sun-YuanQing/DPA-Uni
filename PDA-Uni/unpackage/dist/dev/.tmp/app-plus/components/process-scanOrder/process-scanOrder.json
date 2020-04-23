@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  },
+  "component": true
+}

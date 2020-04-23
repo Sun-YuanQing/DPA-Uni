@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "外箱客户条码绑定",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "工作中心配置",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot"
+  }
+}

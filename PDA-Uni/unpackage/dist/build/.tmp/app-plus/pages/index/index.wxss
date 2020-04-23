@@ -1,0 +1,56 @@
+
+@charset "UTF-8";
+
+/*page uni-padding-wrap优化菜单少还有滚动条的情况 */
+page {
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+	overflow-y: scroll;
+	background: #BDCEDE;
+}
+.uni-padding-wrap {
+	padding: 0px;
+	margin: 0px auto;
+	height: 100%;
+	overflow: hidden;
+	overflow-y: scroll;
+}
+.uni-card {
+	-webkit-box-shadow: none;
+	        box-shadow: none;
+}
+.uni-list:after {
+	height: 0;
+}
+.uni-list:before {
+	height: 0;
+}
+.uni-list .mui-btn {
+	margin: 20rpx;
+	width: calc(100% / 2 - 40rpx);
+	background-color: #ffffff;
+	border: 1rpx solid #e1e2e4;
+	color: black;
+	position: relative;
+	float: left;
+	word-break: normal;
+	/* line-height: 80upx;padding-top: 5px; */
+	vertical-align: middle;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	min-height: 100rpx;
+}
+.uni-list .mui-btn:active {
+	background-color: #d5e3f0;
+	color: black;
+	border: 1rpx solid #bdcede;
+}
+.uni-list .mui-btn:disabled {
+	background-color: #CCCCCC;
+	color: gray;
+	border: 1rpx solid #bdcede;
+}
+

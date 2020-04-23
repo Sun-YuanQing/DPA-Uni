@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<script src="js/vue.min.js"></script>
+
+		<style type="text/css">
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">登录</h1>
+			<a id="menuTool" class="mui-btn mui-btn-blue mui-btn-link mui-pull-right">设置</a>
+		</header>
+
+		<div class="mui-content" id="vm-login">
+			<form id="login-form" class="mui-input-group">
+				<div class="mui-input-row">
+					<label>账号</label>
+					<input type="text" class="mui-input-clear mui-input" v-model="account" placeholder="请输入账号" value="">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input type="text" class="mui-input-clear mui-input" v-model="password" placeholder="请输入密码" value="">
+				</div>
+				<div class="mui-input-row">
+					<label>帐套</label>
+					<select v-model="dbMap" class="mui-select mui-btn-block">
+						<option v-for="item in accList" v-bind:value="item">{{item}}</option>
+					</select>
+				</div>
+			</form>
+			<form class="mui-input-group">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						自动登录
+						<div id="autoLogin" class="mui-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</li>
+				</ul>
+			</form>
+			<div class="mui-content-padded">
+				<button id="btnLogin" type="button" class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/common.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/ApiServer.js"></script>
+		<script type="text/javascript">
+			/**
+			 * @description 系统版本
+			 * @type {IDString}
+			 */
+			var wgtWaiting = null;
+			/**
+			 * @description 数据是否已加载完成
+			 */
+			var isLoaded = false;
+
+			var vm = new Vue({
+				el: '#vm-login',
+				data: {
+					dbMap: '',
+					account: 'adm',
+					password: '',
+					accList: []
+				}
+			});
+
+			mui.init({
+				//swipeBack: true,//启用右滑关闭功能
+				//					keyEventBind:{
+				//						backbutton: false//关闭back案件监听
+				//					} 
+			});
+
+			var menuTool = document.getElementById("menuTool");
+			menuTool.addEventListener('tap', function(event) {
+				mui.openWindow({
+					id: 'Pages/AppConfig.html',
+					url: 'Pages/AppConfig.html'
+				});
+			}, false);
+
+			var settings;
+			var state;
+			var wgtVer = '',
+				custVer = '';
+
+			//检查 "登录状态/锁屏状态" 结束
+			var loginButton = document.getElementById("btnLogin");
+			var autoLoginButton = document.getElementById("autoLogin");
+
+			mui.plusReady(function() {
+				plus.screen.lockOrientation("portrait-primary") //锁定竖屏正方向
+
+				settings = app.getSettings();
+				state = app.getState();
+
+				autoLoginButton.classList[settings.autoLogin ? 'add' : 'remove']('mui-active');
+
+				var mainPage = mui.preload({
+					url: "main.html",
+					id: 'main'
+				});
+				var main_loaded_flag = false;
+				mainPage.addEventListener("loaded", function() {
+					main_loaded_flag = true;
+				});
+
+				var toMain = function() {
+					//使用定时器的原因：
+					//可能执行太快，main页面loaded事件尚未触发就执行自定义事件，此时必然会失败
+					var id = setInterval(function() {
+						if(main_loaded_flag) {
+							clearInterval(id);
+							mui.fire(mainPage, 'show', null);
+							mainPage.show('pop-in');
+							setTimeout(closeme, 1000);
+						}
+					}, 20);
+				};
+				if(settings.autoLogin && state.token) {
+					var logID = setInterval(function() {
+						if(isLoaded) {
+							clearInterval(logID);
+							var loginInfo = {
+								dbMap: state.loginInfo.dbMap,
+								userID: state.loginInfo.userID,
+								userPass: state.loginInfo.userPass,
+								computerName: state.loginInfo.computerName
+							};
+							login(loginInfo, toMain);
+						}
+					}, 1000);
+				}
+
+				// close splash
+				setTimeout(function() {
+					//关闭 splash
+					plus.navigator.closeSplashscreen();
+				}, 600);
+
+				loginButton.addEventListener('tap', function(event) {
+					if(vm.account == '') {
+						return mui.toast('请输入账号！');
+					}
+					//						if(vm.password == ''){
+					//							return mui.toast('请输入密码！'); 
+					//						}
+					if(vm.dbMap == '') {
+						return mui.toast('帐套还在加载中，请稍后！');
+					}
+					var loginInfo = {
+						dbMap: vm.dbMap,
+						userID: vm.account,
+						userPass: vm.password,
+						computerName: getDeviceInfo()
+					};
+
+					//判断是否启用扫描功能 
+					settings.EnableScan = plus.device.vendor == "handheld" ? false : true;
+					app.setSettings(settings);
+
+					login(loginInfo, toMain);
+				});
+
+				autoLoginButton.addEventListener('toggle', function(event) {
+					setTimeout(function() {
+						var isActive = event.detail.isActive;
+						settings.autoLogin = isActive;
+						app.setSettings(settings);
+					}, 50);
+				}, false);
+
+				document.addEventListener('netchange', function() {
+					var isNetWork = common.IsConnectedToInternet();
+					console.log('isLoaded:' + isLoaded + ' NetWork:' + isNetWork);
+					if(isNetWork && !isLoaded) {
+						mui.toast('网络已连接')
+						upgrade(wgtVer, custVer);
+						getdbMap();
+					}
+				});
+
+				if(!settings.ServerIP) {
+					mui.alert('请先配置服务器地址', "系统提示", '确定', function() {
+						mui.openWindow({
+							id: 'Pages/AppConfig.html',
+							url: 'Pages/AppConfig.html'
+						});
+					});
+					return;
+				}
+
+				ReLogin();
+
+				//					//重写系统返回键
+				//					var backButtonPress = 0;
+				//					mui.back = function(event) {
+				//						backButtonPress++;
+				//						//						if (backButtonPress > 1) {
+				//						//							plus.runtime.quit();
+				//						//						} else {
+				//						//							plus.nativeUI.toast('再按一次退出应用');
+				//						//						}
+				//						setTimeout(function() {
+				//							backButtonPress = 0;
+				//						}, 1000);
+				//						return false;
+				//					};
+
+			});
+
+			/**
+			 * @description 重新调用
+			 */
+			function ReLogin() {
+				settings = app.getSettings();
+				//http://ask.dcloud.net.cn/article/1019
+				plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+					wgtVer = inf.version;
+					upgrade(wgtVer, custVer);
+				});
+
+				getdbMap();
+			}
+			/**
+			 * @param {String} ver 系统版本号
+			 * @param {Object} custVer 客户版本号
+			 */
+			function upgrade(ver, custVer) {
+				if(!common.IsConnectedToInternet()) {
+					isLoaded = false;
+					return;
+				}
+				wgtWaiting = plus.nativeUI.showWaiting("　　　　检查升级　　　");
+				apiServer.upgrade(ver, custVer, function(rlt) {
+					wgtWaiting.close();
+					if(rlt.success) {
+						if(rlt.ResultNote == "1") {
+							var upgradePath = apiServer.getFullUrlAddress('upgrade/download');
+							downloadUpgradeFile(upgradePath);
+						}
+					} else {
+						mui.toast(rlt.ResultText);
+					}
+				})
+			}
+
+			/**
+			 * @description 下载更新文件
+			 * @param {Object} url
+			 * 
+			 * http://ask.dcloud.net.cn/article/12628
+			 */
+			function downloadUpgradeFile(url, ver) {
+				if(!common.IsConnectedToInternet()) {
+					isLoaded = false;
+					return;
+				}
+				var options = {
+					method: "GET",
+					filename: "_downloads/upgrade/",
+					timeout: 10,
+					retry: 1
+				};
+
+				//删除这个文件夹下的所有文件
+				plus.io.resolveLocalFileSystemURL(options.filename, function(entry) {
+					var dirReader = entry.createReader();
+					dirReader.readEntries(function(fs) {
+						var fileCount = fs.length;
+						for(var i = 0; i < fileCount; i++) {
+							var fileName = fs[i].name;
+							fs[i].remove(function(entry) {
+								//								console.log(fileName + " Remove succeeded");
+							}, function(e) {
+								//								console.log("Remove file failed: " + e.message);
+								mui.toast("Remove file failed: " + e.message);
+							});
+						}
+					})
+				}, function(e) {
+					//mui.toast("Resolve file URL failed: " + e.message);
+				});
+				wgtWaiting = plus.nativeUI.showWaiting("　　　　正在下载　　　");
+				var dtask = plus.downloader.createDownload(url, options);
+				//				console.log(dtask.filename);
+				dtask.addEventListener('statechanged', function(d, status) {
+					if(!dtask) return;
+					//					console.log('**************************************************************');
+					//					console.log('headers:' + d.getAllResponseHeaders() + ' status:' + status); //1505357760905
+					//					console.log('state:' + d.state + ' downloadedSize:' + d.downloadedSize + ' totalSize:' + d.totalSize + '\n');
+					//					console.log(' ');
+					if(status != null && status == 204) {
+						wgtWaiting.close();
+						//						mui.alert('下载文件不存在！')
+						dtask.abort();
+						return;
+					}
+
+					switch(d.state) {
+						case 1: // 开始
+							//							wgtWaiting.setTitle("　　 开始下载1...　　 ");
+							//							console.log('开始下载1');
+							break;
+						case 2: // 已连接到服务器
+							//							wgtWaiting.setTitle("　　 开始下载2...　　 ");
+							//							console.log('开始下载2');
+
+							break;
+						case 3:
+							//							var percent = d.downloadedSize / d.totalSize * 100;
+							//							//							console.log(percent)
+							//							wgtWaiting.setTitle("　　 已下载" + parseInt(percent) + "%　　 ");
+							break;
+						case 4: // 下载完成
+							//							console.log('filename：' + d.filename);
+							wgtWaiting.close();
+							mui.toast("下载完成");
+							//							alert('OK');
+							window.setTimeout(function() {
+								//								console.log(d.filename);
+								installWgt(d.filename);
+							}, 500);
+							//							dtask.abort();
+							break;
+					}
+				});
+				dtask.start();
+			}
+
+			/**
+			 * @description 安装更新
+			 * @param {Object} wgtpath
+			 */
+			function installWgt(wgtpath) {
+				plus.runtime.install(wgtpath, {}, function(wgtinfo) {
+					mui.toast("更新完成，正在重启");
+					plus.runtime.restart();
+				}, function(error) {
+					mui.alert("应用更新失败！\n" + error.message);
+				});
+			}
+
+			/**
+			 * @description 获取设备信息
+			 * @return {String} 设备信息
+			 */
+			function getDeviceInfo() {
+				var str = "";
+				str += "设备型号：" + plus.device.model + "\n";
+				str += "设备厂商：" + plus.device.vendor + "\n";
+				str += "IMEI：" + plus.device.imei + "\n";
+				str += "UUID：" + plus.device.uuid + "\n";
+				str += "屏幕分辨率：" + plus.screen.resolutionWidth * plus.screen.scale + " x " + plus.screen.resolutionHeight * plus.screen.scale + "\n";
+				str += "DPI：" + plus.screen.dpiX + " x " + plus.screen.dpiY;
+				return str;
+			}
+
+			/**
+			 * @description 获取帐套信息
+			 */
+			function getdbMap() {
+				//获取用户帐套
+				if(!common.IsConnectedToInternet()) {
+					isLoaded = false;
+					return;
+				}
+				apiServer.getdbmap(function(rlt) {
+					if(rlt.success) {
+						vm.accList = JSON.parse(rlt.ResultNote);
+						vm.dbMap = vm.accList[0];
+						isLoaded = true;
+					} else {
+						mui.toast(rlt.ResultText);
+					}
+				});
+			}
+
+			/**
+			 * @description 登录
+			 * @param {Object} loginInfo 登录对象
+			 */
+			function login(loginInfo, callback) {
+				wgtWaiting = plus.nativeUI.showWaiting("");
+				apiServer.login(loginInfo, function(rlt) {
+					wgtWaiting.close();
+					if(rlt.success) {
+						main_loaded_flag = true;
+						callback();
+					} else {
+						mui.toast(rlt.ResultText);
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

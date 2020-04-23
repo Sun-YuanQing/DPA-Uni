@@ -1,0 +1,97 @@
+
+@charset "UTF-8";
+.uni-numbox {
+	display: -webkit-inline-box;
+	display: -webkit-inline-flex;
+	display: -ms-inline-flexbox;
+	display: inline-flex;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	    -ms-flex-direction: row;
+	        flex-direction: row;
+	-webkit-box-pack: start;
+	-webkit-justify-content: flex-start;
+	    -ms-flex-pack: start;
+	        justify-content: flex-start;
+	height: 70rpx;
+	position: relative
+}
+.uni-numbox:after {
+	content: '';
+	position: absolute;
+	-webkit-transform-origin: center;
+	    -ms-transform-origin: center;
+	        transform-origin: center;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
+	pointer-events: none;
+	top: -50%;
+	left: -50%;
+	right: -50%;
+	bottom: -50%;
+	border: 1px solid #c8c7cc;
+	border-radius: 12rpx;
+	-webkit-transform: scale(.5);
+	    -ms-transform: scale(.5);
+	        transform: scale(.5)
+}
+.uni-numbox__minus,
+.uni-numbox__plus {
+	margin: 0;
+	background-color: #f8f8f8;
+	width: 70rpx;
+	font-size: 40rpx;
+	height: 100%;
+	line-height: 70rpx;
+	text-align: center;
+	display: -webkit-inline-box;
+	display: -webkit-inline-flex;
+	display: -ms-inline-flexbox;
+	display: inline-flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	color: #333;
+	position: relative
+}
+.uni-numbox__value {
+	position: relative;
+	background-color: #fff;
+	width: 80rpx;
+	height: 100%;
+	text-align: center;
+	padding: 0
+}
+.uni-numbox__value:after {
+	content: '';
+	position: absolute;
+	-webkit-transform-origin: center;
+	    -ms-transform-origin: center;
+	        transform-origin: center;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
+	pointer-events: none;
+	top: -50%;
+	left: -50%;
+	right: -50%;
+	bottom: -50%;
+	border-style: solid;
+	border-color: #c8c7cc;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-top-width: 0;
+	border-bottom-width: 0;
+	-webkit-transform: scale(.5);
+	    -ms-transform: scale(.5);
+	        transform: scale(.5)
+}
+.uni-numbox--disabled {
+	color: silver
+}
+

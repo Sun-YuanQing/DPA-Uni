@@ -1,0 +1,1 @@
+<view><label data-event-opts="{{[['tap',[['cbxChange',['$event']]]]]}}" class="checkbox" bindtap="__e"><checkbox checked="{{isChecked}}"></checkbox>下次不再选择</label></view>

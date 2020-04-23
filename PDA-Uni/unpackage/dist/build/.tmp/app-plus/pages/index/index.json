@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "首页",
+  "titleNView": {
+    "buttons": [
+      {
+        "type": "menu"
+      }
+    ]
+  },
+  "usingComponents": {
+    "index-menus": "/components/index-menus/index-menus"
+  }
+}

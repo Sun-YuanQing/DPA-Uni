@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<script src="js/vue.min.js"></script>
+		<style type="text/css">
+			.mui-content .mui-btn {
+				margin: 10px 13px;
+				width: calc(100% / 2 - 30px);
+				background-color: #ffffff;
+				border: 1px solid #e1e2e4;
+				color: black;
+			}
+			.mui-content .mui-btn:active{
+				background-color: #d5e3f0;
+				color: black;
+				border: 1px solid #bdcede;
+			}
+			.mui-content .mui-btn:disabled{
+				background-color: #CCCCCC;
+				color: gray;
+				border: 1px solid #bdcede;
+			}
+			
+			li.mui-active a{
+				color: #508dc1 !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a id="menuTool" class="mui-action-menu mui-icon mui-icon-bars mui-pull-right" href="#topPopover"></a>
+			<h1 class="mui-title">首页</h1>
+		</header>
+
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<template v-for="(menu,index) in menus">
+					<li v-if="index == 0" class="mui-table-view-cell mui-collapse mui-active">
+						<a class="mui-navigate-right" href="#">{{ menu.name }}</a>
+						<div class="mui-collapse-content" style="min-height: 70px;">
+							<template v-for="(subMenu, subIndex) in menu.submenu">
+								<button v-if="!subMenu.isEnabled" v-bind:id="subMenu.name" v-bind:url="subMenu.action" type="button" type="button" class="mui-btn mui-btn-outlined">{{ subMenu.name }}</button>
+								<button v-if="subMenu.isEnabled" v-bind:id="subMenu.name" v-bind:url="subMenu.action" type="button" type="button" class="mui-btn mui-btn-outlined">{{ subMenu.name }}</button>
+							</template>
+						</div>
+					</li>
+					<li v-if="index > 0" class="mui-table-view-cell mui-collapse ">
+						<a class="mui-navigate-right" href="#">{{ menu.name }}</a>
+						<div class="mui-collapse-content" style="min-height: 70px;">
+							<template v-for="(subMenu, subIndex) in menu.submenu">								
+								<button v-if="!subMenu.isEnabled" disabled="disabled" v-bind:id="subMenu.name" v-bind:url="subMenu.action" type="button" type="button" class="mui-btn mui-btn-outlined">{{ subMenu.name }}</button>
+								<button v-if="subMenu.isEnabled" v-bind:id="subMenu.name" v-bind:url="subMenu.action" type="button" type="button" class="mui-btn mui-btn-outlined">{{ subMenu.name }}</button>
+							</template>
+						</div>
+					</li>
+				</template>
+
+			</ul>
+
+			<!--右上角弹出菜单-->
+			<div id="topPopover" class="mui-popover" style="width: 100px;">
+				<!--<div class="mui-popover-arrow"></div>-->
+				<ul class="mui-table-view">
+					<!--<li class="mui-table-view-cell">
+						<a id="btnOpenCamera" href="#">打开摄像头</a>
+					</li>-->
+					<li class="mui-table-view-cell">
+						<a id="btnLogout" href="#">退出</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/common.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/ApiServer.js"></script>
+		<script type="text/javascript">
+			(function($, doc) {
+				$.init({});
+
+				var vm = new Vue({
+					el: '.mui-content',
+					data: {
+						menus: []
+					},
+					methods: {
+						getIsEnable: function(isEnabled){
+							console.log(isEnabled);
+							return isEnabled ? "" : "disabled";
+						}
+					}
+				});
+
+				/**
+				 * @description ping 返回的值
+				 * @type {Object}
+				 */
+				var pingCode = null;
+
+				/**
+				 * @description 监听自定义事件
+				 */
+				window.addEventListener('show', function(event) {
+					pingCode = window.setInterval(function() {
+						//TODO: 检测，请求超时错误，将错误日志记录下来，包含方法名页面名
+						apiServer.ping(function(rlt) {
+							if(rlt.success) {
+
+							} else {
+								$.toast(rlt.ResultText);
+							}
+						});
+					}, 60000);
+					apiServer.getMenus(function(rlt) {
+						if(rlt.success) {
+							vm.menus = rlt.ResultNote;
+						} else {
+							$.toast(rlt.ResultText);
+						}
+					})
+				})
+
+				$.plusReady(function() {
+					//获取菜单
+					apiServer.getMenus(function(rlt) {
+						if(rlt.success) {
+							vm.menus = rlt.ResultNote;
+						} else {
+							$.toast(rlt.ResultText);
+						}
+					})
+
+					var logoutButton = document.getElementById("btnLogout");
+					logoutButton.addEventListener('tap', function(event) {
+						//关闭ping
+						window.clearInterval(pingCode);
+						apiServer.logout(function(rlt) {
+							if(rlt.success) {
+								mui('#topPopover').popover('toggle');
+								setTimeout(function() {
+									plus.runtime.quit();
+								}, 300);
+							} else {
+								$.toast(rlt.ResultText);
+							}
+						});
+					});
+
+					//-- 监控回退事件
+					$.oldBack = mui.back;
+					var backButtonPress = 0;
+					$.back = function(event) {
+						backButtonPress++;
+						if(backButtonPress > 1) {
+							plus.runtime.quit();
+						} else {
+							plus.nativeUI.toast('再按一次退出应用');
+						}
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1000);
+						return false;
+					};
+				});
+
+				$('.mui-content').on('tap', '.mui-btn', function(event) {
+					var menuId = this.getAttribute('id');
+					var menuObj = null;
+					for(var i = 0; i < vm.menus.length; i++) {
+						var menu = vm.menus[i];
+						for(var j = 0; j < menu.submenu.length; j++) {
+							if(menu.submenu[j].name == menuId) {
+								menuObj = menu.submenu[j];
+								break;
+							}
+						}
+						if(menuObj != null)
+							break;
+					}
+					if(menuObj == null) return;
+					app.setUsedMenus(menuObj);
+					var startIndex = menuObj.action.lastIndexOf('/') + 1;
+					var pageName = menuObj.action.substring(startIndex);
+					$.openWindow({
+						url: menuObj.action,
+						id: pageName
+					});
+				});
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">领料</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<input id="txtBarcode" type="text" class="mui-input-clear mui-input" v-model="orderNo" placeholder="请扫描领料单号" value="">
+				</div>
+				<div class="mui-input-row">
+					<button id="btnWrite" class="mui-btn">Write</button>
+					<button id="btnRead" class="mui-btn">Read</button>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/mui.pullToRefresh.js"></script>
+		<script type="text/javascript" src="../js/mui.pullToRefresh.material.js"></script>
+		<script type="text/javascript" src="../js/lodash.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			(function($, doc) {
+				$.init({});
+
+				var vm = new Vue({
+					el: '.mui-content',
+					data: {
+						orderNo: '123'
+					},
+					methods: {
+
+					}
+				});
+
+				$.plusReady(function() {
+					document.getElementById("txtBarcode").focus();
+					//test();
+					//					setTimeout(function() {
+					//						console.log('设置焦点');
+					//						//此处可写具体逻辑设置获取焦点的input
+					//						var inputElem = doc.querySelector('input');
+					//						console.log(inputElem);
+					//						inputElem.focus();
+					//					}, 1000);
+
+					var btnWrite = document.getElementById("btnWrite");
+					var btnRead = document.getElementById("btnRead");
+
+					btnWrite.addEventListener('tap', function() {
+						WriteFile();
+					});
+					btnRead.addEventListener('tap', function() {
+						ReadFile();
+					});
+				});
+
+				function test() {
+					//					plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
+					//						// 可通过fs操作PRIVATE_DOC文件系统
+					//
+					//					}, function(e) {
+					//						alert("Request file system failed: " + e.message);
+					//					});
+
+					plus.io.resolveLocalFileSystemURL("_www/appConfig.json", function(entry) {
+						// 可通过entry对象操作test.html文件 
+						entry.file(function(file) {
+							var fileReader = new plus.io.FileReader();
+							alert("getFile:" + JSON.stringify(file));
+							fileReader.readAsText(file, 'utf-8');
+							fileReader.onloadend = function(evt) {
+								alert("11" + evt);
+								alert("evt.target" + evt.target);
+								alert(evt.target.result);
+							}
+							alert(file.size + '--' + file.name);
+						});
+					}, function(e) {
+						alert("Resolve file URL failed: " + e.message);
+					});
+
+				}
+
+				function WriteFile() {
+					var json = {
+						serverIP: "192.168.0.226:8088"
+					};
+					plus.io.requestFileSystem(plus.io.PRIVATE_DOC, function(fs) {
+						// fs.root是根目录操作对象DirectoryEntry
+						fs.root.getFile('config.json', {
+							create: true
+						}, function(fileEntry) {
+							fileEntry.file(function(file) {
+								//{"size":0,"type":2,"name":"config.json","lastModifiedDate":"2017-10-17T07:04:07.000Z","fullPath":"/storage/sdcard0/Android/data/io.dcloud.HBuilder/apps/HBuilder/doc/config.json"}
+								var fileReader = new plus.io.FileReader();
+								alert("getFile:" + JSON.stringify(file));
+								fileReader.readAsText(file, 'utf-8');
+								fileReader.onloadend = function(evt) {
+									alert(evt.target.result);
+								}
+							})
+
+							//							fileEntry.createWriter(function(writer) {
+							//								writer.onwrite = function(e) {
+							//									alert("Write data success!");
+							//								};
+							//								writer.onerror = function(e) {
+							//									alert("Write data error!");
+							//								};
+							//								// Write data to the end of file.
+							//								writer.seek(writer.length);
+							//								writer.write('newarr');
+							//							});
+						});
+					});
+				}
+
+				function ReadFile() {}
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

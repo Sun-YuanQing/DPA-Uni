@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "生产入库单",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

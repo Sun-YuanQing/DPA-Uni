@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<!--
+	要求：	
+-->
+
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+			.mui-scroll-wrapper {
+				top: 164px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">领料明细</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">料品编号：<span class="valueStyle">{{proInfo.itemNo}}</span> </label>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">料品名称：<span class="valueStyle">{{proInfo.partName}}</span> </label>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: calc(100% / 2);">应领总数量：<span class="valueStyle">{{proInfo.sheetQty}}</span> </label>
+					<label class="mui-h5" style="width: calc(100% / 2);">实领总数量：<span class="valueStyle">{{proInfo.validQty}}</span> </label>
+				</div>
+			</div>
+
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+						<template v-if="partControl == 2">
+							<li v-for="item in itemList" class="mui-table-view-cell zebra">
+								{{item}}
+							</li>
+						</template>
+						<template v-else>
+							<li v-for="item in itemList" class="mui-table-view-cell zebra">
+								<div class="mui-table">
+									<div class="mui-row" v-for="field in Fileds">
+										<div class="mui-table-cell mui-col-xs-3">
+											<span class="mui-h5">{{field[0]}}：</span>
+										</div>
+										<div class="mui-table-cell mui-col-xs-9">
+											<span class="mui-h5 mui-ellipsis-2 valueStyle">{{ getFieldValue(item, field[1]) }}</span>
+										</div>
+									</div>
+								</div>
+							</li>
+						</template>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/lodash.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: '.mui-content',
+				data: {
+					itemList: [],
+					partControl: 2, // 2:序列号,3:批次
+					proInfo: {},
+					Fileds: [ //针对批号的字段
+						['批号', 'inLot'],
+						['应领数量', 'sheetQty'],
+						['实领数量', 'validQty']
+					]
+				},
+				watch: {},
+				methods: {
+					getFieldValue: function(item, fieldName) {
+						return item[fieldName];
+					}
+				}
+			});
+			
+
+			(function($, doc) {
+				$.init({});
+
+				$.plusReady(function() {
+					var self = plus.webview.currentWebview();
+					if(self.proInfo.inoutDetail == null) {
+						self.proInfo.inoutDetail = [];
+					}
+					if(self.proInfo.esnList == null)
+						self.proInfo.esnList = [];
+					vm.partControl = self.proInfo.inoutDetail.length > 0 ? 3 : 2;
+					vm.proInfo = self.proInfo;
+
+					if(vm.proInfo.inoutDetail.length > 0) {
+						$('.mui-title')[0].innerText = "领料-批次明细";
+						vm.itemList = vm.proInfo.inoutDetail;
+					} else {
+						$('.mui-title')[0].innerText = "领料-序列号明细";
+						vm.itemList = vm.proInfo.esnList;
+					}
+
+					//阻尼系数
+					var deceleration = $.os.ios ? 0.003 : 0.0004;
+					$('.mui-scroll-wrapper').scroll({
+						bounce: true,
+						indicators: true, //是否显示滚动条
+						deceleration: deceleration
+					});
+
+				});
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

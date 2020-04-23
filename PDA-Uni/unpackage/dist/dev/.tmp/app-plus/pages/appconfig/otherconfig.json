@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "其它功能",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

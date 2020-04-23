@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "生产退库明细",
+  "usingComponents": {
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

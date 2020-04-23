@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "首件确认",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

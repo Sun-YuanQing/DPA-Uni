@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "错误日志",
+  "usingComponents": {
+    "uni-card": "/components/uni-card/uni-card"
+  }
+}

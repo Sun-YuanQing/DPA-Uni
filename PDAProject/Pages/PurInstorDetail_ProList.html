@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<!--
+	要求：扫描完成后，跳转到上一页	
+-->
+
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+			.mui-scroll-wrapper {
+				top: 204px;
+			}
+			#middlePopover {
+				min-width: 282px;
+				height: 205px;
+				top: 50% !important;
+				margin-top: -150px;
+				left: 50% !important;
+				margin-left: -141px;
+			}
+			
+			@media (min-width: 400px) {
+				#middlePopover {
+					width: 80%;
+					margin-left: -40%;
+				}
+			}
+			
+			.mui-popover .mui-popover-arrow {
+				display: none !important;
+			}
+			
+			#middlePopover .mui-input-row label:first-child {
+				width: 85px;
+				padding-right: 0;
+			}
+			
+			#middlePopover .mui-input-row label:nth-child(n+2) {
+				/*从第二个起*/
+				width: calc(100% - 85px);
+				padding-left: 0;
+			}
+			/*数字框的宽度*/
+			
+			#middlePopover .mui-input-row .mui-numbox {
+				width: calc(100% - 102px);
+				padding-left: 0;
+				padding-right: 0;
+			}
+			
+			.fullRowValue{
+				width: calc(100% - 102px);
+				margin-left: 10px;
+				font-size: 12px;
+				margin-top: 3px;
+				padding-left: 0;
+				padding-right: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">来料批次明细</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<input id="txtBarcode_code1" type="text" class="mui-input-clear mui-input" v-model="patchNo" v-bind:placeholder="scanPlaceholder" value=""> 
+						</div>
+						<div id="imgScan" class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">料品编号：<span class="valueStyle">{{proInfo.itemNo}}</span> </label>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: auto;">料品名称：<span class="valueStyle">{{proInfo.partName}}</span> </label>
+				</div>
+				<div class="mui-input-row">
+					<label class="mui-h5" style="width: calc(100% / 2);">应收总数量：<span class="valueStyle">{{proInfo.sheetQty}}</span> </label>
+					<label class="mui-h5" style="width: calc(100% / 2);">实收总数量：<span class="valueStyle">{{proInfo.validQty}}</span> </label>
+				</div>
+			</div>
+
+			<div id="list" class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+						<template v-if="partControl == 2">
+							<li v-for="item in itemList" class="mui-table-view-cell zebra">
+								{{item}}
+							</li>
+						</template>
+						<template v-else>
+							<li v-for="item in itemList" class="mui-table-view-cell zebra">
+								<div class="mui-table">
+									<div class="mui-row" v-for="field in Fileds">
+										<div class="mui-table-cell mui-col-xs-3">
+											<span class="mui-h5">{{field[0]}}：</span>
+										</div>
+										<div class="mui-table-cell mui-col-xs-9">
+											<span class="mui-h5 mui-ellipsis-2 valueStyle">{{ getFieldValue(item, field[1]) }}</span>
+										</div>
+									</div>
+								</div>
+							</li>
+						</template>
+
+					</ul>
+				</div>
+			</div>
+			
+			<!--弹出框 按批号收料  输入数量-->
+			<div id="middlePopover" class="mui-popover">
+				<div class="mui-popover-arrow"></div>
+				<div class="mui-content-padded">
+					<h4 style="text-align: center;margin-top: 10px; margin-bottom: 10px;">料品信息</h4>
+					<div class="mui-input-group">
+						<div class="mui-input-row">
+							<label class="mui-h5">批号：</label>
+							<label class="mui-h5 mui-ellipsis">{{scanRlt.scanCode}}</label>
+						</div>
+						<div class="mui-input-row">
+							<label class="mui-h5">生产日期：</label>
+							<button id="bntSelDate" class="fullRowValue" class="btn mui-btn mui-btn-block">{{scanRlt.proDate}}</button>
+						</div>
+						<div class="mui-input-row">
+							<label class="mui-h5">实收数量：</label>
+							<div class="mui-numbox" data-numbox-min='0' data-numbox-max='1000'>
+								<!-- "-"按钮，点击可减小当前数值 -->
+								<button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+								<input id="txtType1Qty" class="mui-numbox-input" type="number" value="" />
+								<!-- "+"按钮，点击可增大当前数值 -->
+								<button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
+							</div>
+						</div>
+					</div>
+					<div style="height: 45px; padding: 5px 0; text-align: center;">
+						<button id="btnEnterCancel" type="button" class="mui-btn" style="width: 80px; margin-right: 20px;">取消 </button>
+						<button id="btnEnterSure" type="button" class="mui-btn" style="width: 80px;">确定 </button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/lodash.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/ArrayEx.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			var isChanged = false;
+			var vm = new Vue({
+				el: '.mui-content',
+				data: {
+					patchNo:'',
+					scanPlaceholder:'请扫描批号',
+					itemList: [],
+					partControl: 2, // 2:序列号,3:批次
+					proInfo: {},
+					Fileds: [ //针对批号的字段
+						['批号', 'inLot'],
+						['生产日期', 'proDate'],
+						['实收数量', 'validQty']
+					],
+					scanRlt: {
+						rowIndex: '', //扫描定位的行索引
+						scanCode: '', //扫描
+						partControl: 1, //扫描类型
+						partNo: '', //料品内码
+						itemNo: '', //料号
+						partName: '', //料品名称
+						partSpec: '', //料品规格
+						packNumer: 0, //每箱数量,为零就忽略
+						snLength: 0, //序列号长度,校验用,如果为零,忽略
+						validQty: 0, //实收数量
+						proDate:'请选择日期'
+					} //扫描的结果
+				},
+				watch: {
+					patchNo: function() {
+						if(this.patchNo == '')
+							return;
+						this.getProDetail();
+					}
+				},
+				methods: {
+					// 200这是我们为用户停止输入等待的毫秒数
+					getProDetail: _.debounce(function() {
+						scanCode();
+					}, 200),
+					getFieldValue: function(item, fieldName) {
+						return item[fieldName];
+					}
+				}
+			});
+			
+
+			(function($, doc) {
+				$.init({});
+
+				$.plusReady(function() {
+					var self = plus.webview.currentWebview();
+					if(self.proInfo.inoutDetail == null) {
+						self.proInfo.inoutDetail = [];
+					}
+					if(self.proInfo.esnList == null)
+						self.proInfo.esnList = [];
+					vm.proInfo = self.proInfo;
+					vm.partControl = vm.proInfo.partControl;
+
+					if(vm.partControl == 3) {
+						$('.mui-title')[0].innerText = "来料-批次明细";
+						vm.itemList = vm.proInfo.inoutDetail;
+						vm.scanPlaceholder = '请扫描批号';
+					} else {
+						$('.mui-title')[0].innerText = "来料-序列号明细";
+						vm.itemList = vm.proInfo.esnList;
+						vm.scanPlaceholder = '请扫描序列号';
+					}
+
+					//阻尼系数
+					var deceleration = $.os.ios ? 0.003 : 0.0004;
+					$('.mui-scroll-wrapper').scroll({
+						bounce: true,
+						indicators: true, //是否显示滚动条
+						deceleration: deceleration
+					});
+					
+					mui(".mui-icon-clear")[0].addEventListener('tap', function() {
+						vm.patchNo = "";
+					});
+	
+					mui("#imgScan")[0].addEventListener('tap', function() {
+						mui.openWindow({
+							id: 'Barcode_scan.html',
+							url: 'Barcode_scan.html',
+							extras: {
+								cltName: 'imgScan',
+							}
+						});
+					});
+					mui("#bntSelDate")[0].addEventListener('tap', function() {
+						var dDate = new Date();
+						dDate.setFullYear(2014, 7, 16);
+						var minDate = new Date();
+						minDate.setFullYear(2017, 0, 1);
+						var maxDate = new Date();
+						maxDate.setFullYear(2099, 11, 31);
+						plus.nativeUI.pickDate(function(e) {
+							var d = e.date;
+							vm.scanRlt.proDate = e.date.format('yyyy/MM/dd'); 
+						}, function(e) {
+//							info.innerText = "您没有选择日期";
+						}, {
+							title: "请选择日期", 
+							date: dDate,
+							minDate: minDate,
+							maxDate: maxDate
+						});
+					});
+					
+					var btnEnterCancel = document.getElementById("btnEnterCancel");
+					var btnEnterSure = document.getElementById("btnEnterSure");
+					//输入数量，点击取消
+					btnEnterCancel.addEventListener('tap', function(event) {
+						mui('#middlePopover').popover('toggle');
+						setTxtFocus('txtBarcode_code1');
+					});
+					// 输入数量,点击确定
+					btnEnterSure.addEventListener('tap', function(event) {
+						//针对 料号 与 批号的处理
+						//实收数量
+						var tmpValidQty = parseInt(document.getElementById("txtType1Qty").value); 
+						if (vm.scanRlt.proDate == '请选择日期'){
+							mui.toast(vm.scanRlt.proDate)
+							return;
+						}
+						if(tmpValidQty == 0) {
+							mui.toast('请输入数量')
+							return;
+						}
+						var newTotalValidQty = vm.proInfo.validQty - vm.scanRlt.validQty + tmpValidQty;
+						if(vm.proInfo.sheetQty < newTotalValidQty) {
+							mui.toast('实收数量 必须  等于  应收数量')
+							return;
+						}
+	
+						vm.scanRlt.validQty = tmpValidQty;
+						//判断是 插入还是更新
+						
+						var exists = false;
+						for(var j = 0; j < vm.itemList.length; j++) {
+							if(vm.itemList[j].inLot == vm.scanRlt.scanCode) {
+								exists = true;
+								vm.itemList[j].validQty = vm.scanRlt.validQty;
+								vm.itemList[j].proDate = vm.scanRlt.proDate;
+								break;
+							}
+						}
+						if (!exists){
+							vm.itemList.push({
+								id:null,
+								sheetLot: vm.proInfo.sheetLot,
+								inLot: vm.scanRlt.scanCode,
+								proDate: vm.scanRlt.proDate,
+								validQty: vm.scanRlt.validQty
+							})
+							//跳转到上一页，并传递数据
+							setTimeout(function(){
+								scrollToRow(vm.itemList.length - 1);
+							}, 300);			
+						}
+						vm.proInfo.validQty = newTotalValidQty;
+	
+						mui('#middlePopover').popover('toggle');
+						setTxtFocus('txtBarcode_code1');
+						
+						if (vm.proInfo.sheetQty == vm.proInfo.validQty){
+							mui.toast(vm.proInfo.partName + ' 已全部验收，将自动返回上一页');
+							setTimeout(function(){
+								mui.back();
+							}, 2000);
+						}
+					});
+					
+					//-- 监控回退事件
+					mui.oldBack = mui.back;
+					mui.back = function(event) {
+						if(isChanged) {
+							//触发事件
+							//获得详情页面
+							if(vm.partControl == 3) {
+								vm.proInfo.inoutDetail = vm.itemList;
+							} else {
+								vm.proInfo.esnList = vm.itemList;
+							}
+							var listPage = plus.webview.getWebviewById('PurInstorDetail.html');
+							
+							//触发详情页面的RefreshPage事件
+							mui.fire(listPage, 'Update', {
+								proInfo: vm.proInfo
+							});
+							mui.oldBack();
+						} else {
+							mui.oldBack();
+						}
+					};
+				});
+			}(mui, document));
+			
+			/**
+			 * @description 扫描条码
+			 */
+			function scanCode() {
+				var wgtWaiting = plus.nativeUI.showWaiting("");
+				apiServer.getScanCode_Instor(vm.patchNo, vm.partControl, function(rlt) {
+					wgtWaiting.close();
+					if(rlt.success) {
+						isChanged = true;
+						vm.scanRlt.scanCode = vm.patchNo;
+						//判断是否重复
+						//更新总数量
+						//完成后返回上一页
+						if (vm.partControl == 2){
+							//序列号
+							var serCodeIndex = -1;
+							for(var i = 0; i < vm.itemList.length; i++) {
+								if(vm.itemList[i] == vm.scanRlt.scanCode) {
+									serCodeIndex = i;									
+									scrollToRow(i);
+									break;
+								}
+							}
+							if(serCodeIndex > -1) {
+								var btnArray = ['确认', '取消'];
+								mui.confirm('该序列号已经扫描过，是否要删除？', '系统提示', btnArray, function(e) {
+									if(e.index == 0) {
+										vm.itemList.removeAt(serCodeIndex);
+										vm.proInfo.validQty = parseInt(vm.proInfo.validQty) - 1;
+									} else {}
+								});
+							} else {
+								//判断实际收的数量
+								if (vm.proInfo.sheetQty <=  vm.proInfo.validQty){
+									mui.toast('实收数量 必须  等于  应收数量')
+									return;
+								}
+								vm.proInfo.validQty = parseInt(vm.proInfo.validQty) + 1;
+								vm.itemList.push(vm.scanRlt.scanCode);		
+								setTimeout(function(){
+									scrollToRow(vm.itemList.length - 1);
+								}, 300);
+								//跳转到上一页，并传递数据
+								if (vm.proInfo.sheetQty == vm.proInfo.validQty){
+									debugger;
+									mui.toast(vm.proInfo.partName + ' 已全部验收，将自动返回上一页');
+									setTimeout(function(){
+										mui.back();
+									}, 2000);									
+								}
+							}
+						}else{
+							//批号
+							var serCodeIndex = -1;
+							for(var j = 0; j < vm.itemList.length; j++) {
+								if(vm.itemList[j].inLot == vm.scanRlt.scanCode) {
+									serCodeIndex = j;
+									vm.scanRlt.validQty = vm.itemList[j].validQty;
+									vm.scanRlt.proDate = vm.itemList[j].proDate;									
+									scrollToRow(j);
+									break;
+								}
+							}
+							if (serCodeIndex == -1){
+								vm.scanRlt.validQty = 0;
+							}
+							document.getElementById("txtType1Qty").value = vm.scanRlt.validQty;
+							mui('#middlePopover').popover('show');
+						}
+						vm.patchNo = '';
+						
+						//判断是否重复扫描
+						
+					} else {
+						vm.patchNo = '';
+						mui.toast(rlt.ResultText);
+					}
+				});
+			}
+			
+			/**
+			 * @description 扫描结果
+			 * @param {Object} t 类型
+			 * @param {Object} r 结果
+			 * @param {Object} f 文件路径
+			 * @param {String} cltName 控件名称
+			 */
+			function scaned(t, r, f, cltName) {
+				vm.patchNo = r;
+			}
+			
+			/**
+			 * @description 行定位
+			 * @param {Object} rowIndex 行索引
+			 */
+			function scrollToRow(rowIndex) {
+				var itemHeight = document.querySelector('li').clientHeight;
+				scrollToPosition(mui('.mui-scroll-wrapper'), rowIndex, itemHeight);
+
+				var oldColor = mui('#list .mui-table-view li:nth-child(' + (rowIndex + 1) + ')')[0].style.backgroundColor;
+				mui('#list .mui-table-view li:nth-child(' + (rowIndex + 1) + ')')[0].style.backgroundColor = "#F6F7FB";
+				setTimeout(function() {
+					mui('#list .mui-table-view li:nth-child(' + (rowIndex + 1) + ')')[0].style.backgroundColor = oldColor;
+				}, 2000);
+			}
+		</script>
+	</body>
+
+</html>

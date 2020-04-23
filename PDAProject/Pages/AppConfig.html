@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">设置</h1>
+		</header>
+
+		<div class="mui-content">
+			<div style="color: gray; margin-left: 17px; padding-top: 12px; font-size: 15px;">
+				<span>请填写服务器地址：</span>
+			</div>
+			<form id="login-form" class="mui-input-group">
+
+				<div class="mui-input-row">
+					<label>IP</label>
+					<input id="txtIP" type="text" class="mui-input-clear mui-input" v-model="ip" placeholder="IP地址" value="">
+				</div>
+				<div class="mui-input-row">
+					<label>端口</label>
+					<input id="txtPort" type="text" class="mui-input-clear mui-input" v-model="port" placeholder="端口" value="">
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id="btnSave" type="button" class="mui-btn mui-btn-block mui-btn-primary">保存</button>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript" src="../js/validUtl.js"></script>
+		<script type="text/javascript">
+			mui.init({});
+
+			var vm = new Vue({
+				el: '.mui-content',
+				data: {
+					ip: 'http://opensoft.vicp.net',
+					port: '8888'
+				}
+			});
+
+			mui.plusReady(function() {
+				var settings = app.getSettings();
+				if(settings.ServerIP) {
+					vm.ip = settings.ServerIP.split(':')[0];
+					vm.port = settings.ServerIP.split(':')[1];
+				}
+
+				var btnSave = document.getElementById("btnSave");
+				btnSave.addEventListener('tap', function(event) {
+					if(!vm.ip) {
+						mui.toast('请录入IP地址！');
+						setTxtFocus('txtIP');
+						return;
+					}
+//					if(!validUtl.isValidIP(vm.ip)) {
+//						mui.toast('IP格式错误！');
+//						setTxtFocus('txtIP');
+//						return;
+//					}
+					if(!vm.port) {
+						mui.toast('请录入端口号！');
+						setTxtFocus('txtPort');
+						return;
+					}
+					if(!validUtl.isValidIPPort(vm.port)) {
+						mui.toast('端口格式错误！');
+						setTxtFocus('txtPort');
+						return;
+					}
+					settings.ServerIP = vm.ip + ":" + vm.port;
+					app.setSettings(settings);
+					console.log(settings.ServerIP);
+					mui.toast('保存成功');
+					setTxtBlur('txtPort');
+					setTxtBlur('txtIP');
+					setTimeout(function() {
+						ReLogin();
+					}, 1000);
+				});
+			});
+
+			setTxtFocus('txtIP');
+
+			function ReLogin() {
+				var ws = plus.webview.currentWebview();
+				var wo = ws.opener();
+				wo.evalJS("ReLogin();");
+				mui.back();
+			}
+		</script>
+	</body>
+
+</html>

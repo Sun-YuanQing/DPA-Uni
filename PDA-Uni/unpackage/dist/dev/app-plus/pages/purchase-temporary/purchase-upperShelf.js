@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"flex-item { width: 33.3%; text-align: center; margin: auto; }\n.",[1],"center-box { max-height: ",[0,800],"; }\n",],undefined,{path:"./pages/purchase-temporary/purchase-upperShelf.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/purchase-temporary/purchase-upperShelf.wxml') } }));

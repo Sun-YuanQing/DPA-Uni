@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+
+		<style type="text/css">
+			#bcid {
+				width: 100%;
+				position: absolute;
+				top: 20px;
+				bottom: 0px;
+				text-align: center;
+			}
+			
+			.tip {
+				color: #FFFFFF;
+				font-weight: bold;
+				text-shadow: 0px -1px #103E5C;
+			}
+			
+			footer {
+				width: 100%;
+				height: 44px;
+				position: absolute;
+				bottom: 0px;
+				line-height: 44px;
+				text-align: center;
+				color: #FFF;
+			}
+			
+			.fbt {
+				width: 50%;
+				height: 100%;
+				background-color: #FFCC33;
+				float: left;
+			}
+			
+			.fbt:active {
+				-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5);
+				box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5);
+			}
+		</style>
+	</head>
+
+	<body style="background-color: #000000;">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">条码扫描</h1>
+			<a id="menuTool" class="mui-btn mui-btn-blue mui-btn-link mui-pull-right" onclick="scanPicture()">相册</a>
+		</header>
+		<div class="mui-content">
+			<div id="bcid">
+				<div style="height:40%;"></div>
+				<p class="tip">...载入中...</p>
+			</div>
+		</div>
+		<!--<footer>
+			<div class="fbt" >取　 消</div>
+			<div class="fbt" onclick="scanPicture()">从相册选择二维码</div>
+		</footer>-->
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+
+		<script type="text/javascript">
+			var ws = null,
+				wo = null;
+			var scan = null,
+				domready = false;
+
+			function plusReady() {
+				if(ws || !window.plus || !domready) {
+					return;
+				}
+				// 获取窗口对象
+				ws = plus.webview.currentWebview();
+				wo = ws.opener();
+				// 开始扫描
+				ws.addEventListener('show', function() {
+					scan = new plus.barcode.Barcode('bcid');
+					scan.onmarked = onmarked;
+					scan.start({
+						conserve: false,
+						filename: '_doc/barcode/'
+					});
+				}, false);
+				// 显示页面并关闭等待框
+				ws.show('pop-in');
+				//				wo.evalJS('closeWaiting()');
+			}
+
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener('plusready', plusReady, false);
+			}
+
+			// 监听DOMContentLoaded事件
+			document.addEventListener('DOMContentLoaded', function() {
+				domready = true;
+				plusReady();
+			}, false);
+
+			// 二维码扫描成功
+			function onmarked(type, result, file) {
+				switch(type) {
+					case plus.barcode.QR:
+						type = 'QR';
+						break;
+					case plus.barcode.EAN13:
+						type = 'EAN13';
+						break;
+					case plus.barcode.EAN8:
+						type = 'EAN8';
+						break;
+					default:
+						type = '其它' + type;
+						break;
+				}
+				result = result.replace(/\n/g, '');
+				//控件名称 
+				var cltName = ws.cltName;
+				wo.evalJS("scaned('" + type + "','" + result + "','" + file + "','" + cltName + "');");
+				mui.back();
+			}
+
+			// 从相册中选择二维码图片 
+			function scanPicture() {
+				plus.gallery.pick(function(path) {
+					plus.barcode.scan(path, onmarked, function(error) {
+						plus.nativeUI.alert('无法识别此图片');
+					});
+				}, function(err) {
+					console.log('Failed: ' + err.message);
+				});
+			}
+		</script>
+	</body>
+
+</html>

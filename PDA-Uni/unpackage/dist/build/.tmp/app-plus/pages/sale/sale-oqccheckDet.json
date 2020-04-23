@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "OQC检验明细",
+  "usingComponents": {
+    "page-foot": "/components/page-foot/page-foot",
+    "barcode-input": "/components/barcode-input/barcode-input"
+  }
+}

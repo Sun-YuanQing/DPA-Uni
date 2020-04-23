@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<!--要求：
+	打开页面，输入框默认获取焦点
+	可额外查询
+	扫描解析条码后，过滤单据
+		如果单据存在，则显示这个单据1S，然后跳转到子页面中
+		否则，提示单据不存在，并清空输入的条码
+	
+	列表，向上、下可拉动刷新、加载更多
+	
+-->
+
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<style type="text/css">
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+			
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 10;
+			}
+			
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+			
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+			
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+			
+			.mui-pull-top-tips .mui-pull-loading {
+				-webkit-backface-visibility: hidden;
+				-webkit-transition-duration: 400ms;
+				transition-duration: 400ms;
+				margin: 0;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon.mui-reverse {
+				/*-webkit-transform: rotate(180deg) translateZ(0);*/
+			}
+			
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+			
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: #fafafa;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+			
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+			
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+			
+			.mui-scroll-wrapper {
+				top: 85px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">领料单列表</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-11">
+							<input id="txtBarcode_OrderNo" type="text" class="mui-input-clear mui-input" v-model="orderNo" placeholder="请扫描领料单号" value="" style="width: calc(100% - 20px);">
+						</div>
+						<div id="imgScan" class="mui-table-cell mui-col-xs-1" style="vertical-align:middle; text-align: center; padding-left: 3px;">
+							<img src="../images/scanqr.png" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+						<li v-for="order in itemList" v-bind:id="order.sheetNo" class="mui-table-view-cell zebra">
+							<div class="mui-table">
+								<div class="mui-table-cell mui-col-xs-9">
+									<div class="mui-row" v-for="field in Fileds">
+										<div class="mui-table-cell mui-col-xs-4">
+											<span class="mui-h5">{{field[0]}}：</span>
+										</div>
+										<div class="mui-table-cell mui-col-xs-8">
+											<span class="mui-h5 mui-ellipsis-2 valueStyle">{{ getFieldValue(order, field[1]) }}</span>
+										</div>
+									</div>
+								</div>
+								<div class="mui-table-cell mui-col-xs-3 mui-text-right" style="vertical-align: top;">
+									<span class="mui-h6">{{order.sheetDate}}</span>
+									<br>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/mui.pullToRefresh.js"></script>
+		<script type="text/javascript" src="../js/mui.pullToRefresh.material.js"></script>
+		<script type="text/javascript" src="../js/lodash.min.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript" src="../js/ApiServer.js"></script>
+		<script type="text/javascript">
+			/**
+			 * @description 分页数
+			 * @param {Number} offset 分页数
+			 */
+			var offset = 0;
+
+			mui.ready(function() {
+				EnableScan();
+				mui('.mui-scroll').pullToRefresh({
+					down: {
+						callback: function() {
+							offset = 0;
+							var self = this;
+							setTimeout(function() {
+								queryOrders();
+								self.endPullDownToRefresh();
+							}, 200);
+						}
+					},
+					up: {
+						callback: function() {
+							offset += 1;
+							var self = this;
+							setTimeout(function() {
+								queryOrders(true);
+								self.endPullUpToRefresh();
+							}, 200);
+						}
+					}
+				});
+			});
+
+			//添加页面传值自定义事件监听
+			window.addEventListener('RefreshPage', function(event) {
+				queryOrders();
+			});
+
+			mui.plusReady(function() {
+				//阻尼系数
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: true,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+
+				mui(".mui-icon-clear")[0].addEventListener('tap', function() {
+					vm.orderNo = "";
+				});
+
+				mui(".mui-table-view").on('tap', '.mui-table-view-cell', function() {
+					//点击时会触发输入法 所以先失去焦点，然后再获得焦点
+					setTxtBlur('txtBarcode_OrderNo');
+					setTxtFocus('txtBarcode_OrderNo');
+					var selOrderId = this.getAttribute('id');
+					queryOrderDetail(selOrderId);
+				});
+
+				mui("#imgScan")[0].addEventListener('tap', function() {
+					setTxtFocus('txtBarcode_OrderNo');
+					mui.openWindow({
+						id: 'Barcode_scan.html',
+						url: 'Barcode_scan.html',
+						extras: {
+							cltName: 'imgScan',
+						}
+					});
+				});
+				queryOrders();
+			});
+
+			var vm = new Vue({
+				el: '.mui-content',
+				data: {
+					orderNo: '',
+					itemList: [],
+					Fileds: [
+						['单号', 'sheetNo'],
+						['部门', 'depName'],
+						['单据类型', 'sheetType']
+					]
+				},
+				watch: {
+					orderNo: function(newValue) {
+						this.getOrders();
+					}
+				},
+				methods: {
+					//_.debounce 是一个通过 lodash 限制操作频率的函数。
+					// 这是我们为用户停止输入等待的毫秒数
+					getOrders: _.debounce(function() {
+						queryOrderDetail(vm.orderNo);
+					}, 200),
+					getFieldValue: function(item, fieldName) {
+						return item[fieldName];
+					}
+				}
+			});
+
+			/**
+			 * @description 页面对象
+			 */
+			var detailPage = null;
+			/**
+			 * @description 打开新页面
+			 * @param {Object} para
+			 */
+			function openWindow(para) {
+				if(!detailPage) {
+					detailPage = mui.preload({
+						id: 'PickingDetail.html',
+						url: 'PickingDetail.html',
+						styles: {
+							"render": "always", //一直渲染
+							"popGesture": "hide"
+						}
+					});
+				}
+
+				//触发详情页面的newsId事件
+				mui.fire(detailPage, 'PageParms', {
+					orderInfo: para
+				});
+
+				setTimeout(function() {
+					detailPage.show("slide-in-right", 300);
+				}, 200);
+
+			}
+
+			/**
+			 * @description 查询单据
+			 * @param {Object} isPullUp 向上拉，加载更多
+			 */
+			function queryOrders(isPullUp) {
+				var tmpVM = vm;
+				plus.nativeUI.showWaiting("正在处理中...");
+				apiServer.getPickingOrders(offset, 10, function(rlt) {
+					plus.nativeUI.closeWaiting();
+					if(rlt.success) {
+						isPullUp = isPullUp || false; //默认刷新
+						var jsonData = JSON.parse(rlt.ResultNote);
+						if(isPullUp) { //加载更多
+							tmpVM.itemList = tmpVM.itemList.concat(jsonData);
+						} else {
+							tmpVM.itemList = jsonData;
+						}
+					} else {
+						mui.toast(rlt.ResultText);
+					}
+					setTxtFocus('txtBarcode_OrderNo');
+				});
+			}
+
+			/**
+			 * @description 查询明细
+			 * @param {Object} orderNo 单号
+			 */
+			function queryOrderDetail(orderNo) {
+				if(orderNo == '' || orderNo == undefined) return;
+				var tmpVM = vm;
+				plus.nativeUI.showWaiting("正在处理中...");
+				apiServer.getPickingOrderDetail(orderNo, function(rlt) {
+					plus.nativeUI.closeWaiting();
+					if(rlt.success) {
+						var jsonData = JSON.parse(rlt.ResultNote);
+						if(jsonData == null) {
+							mui.toast("当前单据不存在！");
+							tmpVM.orderNo = '';
+						} else {
+							tmpVM.orderNo = '';
+							openWindow(jsonData);
+						}
+					} else {
+						tmpVM.orderNo = '';
+						mui.toast(rlt.ResultText);
+					}
+				});
+			}
+
+			/**
+			 * @description 扫描结果
+			 * @param {Object} t 类型
+			 * @param {Object} r 结果
+			 * @param {Object} f 文件路径
+			 * @param {String} cltName 控件名称
+			 */
+			function scaned(t, r, f, cltName) {
+				vm.orderNo = r;
+			}
+		</script>
+	</body>
+
+</html>
