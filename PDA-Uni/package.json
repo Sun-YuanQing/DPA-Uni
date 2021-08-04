@@ -4,7 +4,7 @@
   "description": "PDA   \r ---",
   "main": "main.js",
   "dependencies": {
-    "xmldom": "^0.1.27"
+    "xmldom": "^0.6.0"
   },
   "devDependencies": {},
   "scripts": {
